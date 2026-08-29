@@ -15,27 +15,7 @@ export default defineConfig(() => {
       target: 'esnext',
       cssCodeSplit: true,
       sourcemap: false,
-      chunkSizeWarningLimit: 1200,
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('three') || id.includes('@react-three')) {
-                return 'vendor-three';
-              }
-              if (id.includes('lucide-react')) {
-                return 'vendor-icons';
-              }
-              if (id.includes('motion') || id.includes('gsap') || id.includes('lenis') || id.includes('canvas-confetti')) {
-                return 'vendor-animations';
-              }
-              if (id.includes('react') || id.includes('react-dom')) {
-                return 'vendor-react';
-              }
-            }
-          },
-        },
-      },
+      chunkSizeWarningLimit: 2000,
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

@@ -30,10 +30,23 @@ export const RevealOnScroll: React.FC<RevealOnScrollProps> = ({
       return;
     }
 
+    // Immediate check if element is already within viewport
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      setIsVisible(true);
+      return;
+    }
+
+    // Fail-safe timeout so content is never stuck hidden
+    const fallbackTimer = setTimeout(() => {
+      setIsVisible(true);
+    }, 1200 + delay);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          clearTimeout(fallbackTimer);
           observer.unobserve(entry.target);
         }
       },
@@ -46,6 +59,7 @@ export const RevealOnScroll: React.FC<RevealOnScrollProps> = ({
     observer.observe(el);
 
     return () => {
+      clearTimeout(fallbackTimer);
       observer.disconnect();
     };
   }, [threshold, rootMargin]);

@@ -794,14 +794,31 @@ const MultiStageOrchestrator: React.FC<StageRigProps> = ({ onSectionChange }) =>
   );
 };
 
+// Check WebGL availability safely
+const isWebGLSupported = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+  } catch (e) {
+    return false;
+  }
+};
+
 // --------------------------------------------------------------------------
 // Main Exported Component: Editorial Architectural 3D Background Canvas
 // --------------------------------------------------------------------------
 export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasProps> = ({
   onSectionChange,
 }) => {
+  const [hasWebGL, setHasWebGL] = React.useState(true);
+
   useEffect(() => {
     initScrollListener();
+    setHasWebGL(isWebGLSupported());
   }, []);
 
   return (
@@ -815,43 +832,45 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
         transform: 'translate3d(0,0,0)',
       }}
     >
-      <Canvas
-        dpr={[1, typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 1.25) : 1]}
-        camera={{ position: [0, 0.15, 4.4], fov: 38 }}
-        gl={{
-          antialias: true,
-          alpha: true,
-          powerPreference: 'high-performance',
-          stencil: false,
-          depth: true,
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.15,
-        }}
-        className="w-full h-full"
-      >
-        <ambientLight intensity={0.7} color="#FFF5EB" />
+      {hasWebGL && (
+        <Canvas
+          dpr={[1, typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 1.25) : 1]}
+          camera={{ position: [0, 0.15, 4.4], fov: 38 }}
+          gl={{
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance',
+            stencil: false,
+            depth: true,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.15,
+          }}
+          className="w-full h-full"
+        >
+          <ambientLight intensity={0.7} color="#FFF5EB" />
 
-        <directionalLight
-          position={[4.5, 7.5, 3.5]}
-          intensity={1.3}
-          color="#FFF7EE"
-        />
+          <directionalLight
+            position={[4.5, 7.5, 3.5]}
+            intensity={1.3}
+            color="#FFF7EE"
+          />
 
-        <directionalLight
-          position={[-5, 3, 2]}
-          intensity={0.35}
-          color="#8CB9B0"
-        />
+          <directionalLight
+            position={[-5, 3, 2]}
+            intensity={0.35}
+            color="#8CB9B0"
+          />
 
-        <directionalLight
-          position={[0, 4.5, -3.5]}
-          intensity={0.75}
-          color="#F59E0B"
-        />
-        <pointLight position={[0.85, -0.4, -0.8]} intensity={0.35} color="#E8BE78" />
+          <directionalLight
+            position={[0, 4.5, -3.5]}
+            intensity={0.75}
+            color="#F59E0B"
+          />
+          <pointLight position={[0.85, -0.4, -0.8]} intensity={0.35} color="#E8BE78" />
 
-        <MultiStageOrchestrator onSectionChange={onSectionChange} />
-      </Canvas>
+          <MultiStageOrchestrator onSectionChange={onSectionChange} />
+        </Canvas>
+      )}
 
       {/* Layer 1: Left-to-Right Subtle Atmospheric Vignette for Flawless Text Readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#050E0C]/90 via-[#050E0C]/45 to-transparent pointer-events-none" />
