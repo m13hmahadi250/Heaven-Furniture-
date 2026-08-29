@@ -100,3 +100,36 @@
 .card-dark-border:hover {
   border-color: rgba(245, 158, 11, 0.5);
 }
+
+@keyframes goldShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.8));
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 1));
+  }
+}
+
+.animate-gold-shimmer {
+  background: linear-gradient(110deg, #FFFFFF 15%, #FFFBEB 35%, #FDE047 50%, #F59E0B 65%, #FFFFFF 85%);
+  background-size: 200% 100%;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: goldShimmer 6s linear infinite;
+}
+
+.animate-pulse-glow {
+  display: inline-block;
+  animation: pulseGlow 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+

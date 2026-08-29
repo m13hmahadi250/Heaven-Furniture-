@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047" />
+      <stop offset="35%" stop-color="#F59E0B" />
+      <stop offset="70%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#92400E" />
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#162A26" />
+      <stop offset="50%" stop-color="#0E1B18" />
+      <stop offset="100%" stop-color="#070E0C" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Crest Base with Rounded Corners & Gold Border -->
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bgGrad)" stroke="url(#goldGrad)" stroke-width="2.5" />
+  
+  <!-- Subtle Inner Architectural Inset -->
+  <rect x="12" y="12" width="104" height="104" rx="20" fill="none" stroke="rgba(245, 158, 11, 0.2)" stroke-width="1" stroke-dasharray="3,3" />
+
+  <!-- Stylized Luxury "H" Monogram with Architectural Lines -->
+  <!-- Left Pillar -->
+  <path d="M 38 34 L 48 34 L 48 94 L 38 94 Z" fill="url(#goldGrad)" />
+  <path d="M 34 34 L 52 34 L 52 38 L 34 38 Z" fill="url(#goldGrad)" />
+  <path d="M 34 90 L 52 90 L 52 94 L 34 94 Z" fill="url(#goldGrad)" />
+
+  <!-- Right Pillar -->
+  <path d="M 80 34 L 90 34 L 90 94 L 80 94 Z" fill="url(#goldGrad)" />
+  <path d="M 76 34 L 94 34 L 94 38 L 76 38 Z" fill="url(#goldGrad)" />
+  <path d="M 76 90 L 94 90 L 94 94 L 76 94 Z" fill="url(#goldGrad)" />
+
+  <!-- Crossbar with Diamond Inset -->
+  <path d="M 48 61 L 80 61 L 80 67 L 48 67 Z" fill="url(#goldGrad)" />
+  
+  <!-- Signature Radiant Amber Period / Diamond Accent -->
+  <circle cx="98" cy="91" r="5" fill="#F59E0B" filter="url(#glow)" />
+  <circle cx="98" cy="91" r="3" fill="#FFFBEB" />
+</svg>
