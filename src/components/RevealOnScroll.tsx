@@ -57,10 +57,10 @@ export const RevealOnScroll: React.FC<RevealOnScrollProps> = ({
       style={{
         transitionDelay: `${delay}ms`,
       }}
-      className={`transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`transform transition-[opacity,transform] duration-500 ease-out ${
         isVisible
-          ? 'opacity-100 translate-y-0 filter-none'
-          : 'opacity-0 translate-y-8 will-change-transform'
+          ? 'opacity-100 translate-y-0'
+          : 'opacity-0 translate-y-5'
       } ${className}`}
     >
       {children}

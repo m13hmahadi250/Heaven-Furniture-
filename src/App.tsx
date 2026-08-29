@@ -17,7 +17,7 @@ import { SocialProofAndQuote } from './components/SocialProofAndQuote';
 import { ShowroomExperience } from './components/ShowroomExperience';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
-import { ScrollDrivenCinematicCanvas } from './components/ThreeCanvas/ScrollDrivenCinematicCanvas';
+import { ScrollDrivenCinematicCanvas, onLenisScrollUpdate } from './components/ThreeCanvas/ScrollDrivenCinematicCanvas';
 import { RevealOnScroll } from './components/RevealOnScroll';
 import { CollectionItem } from './types';
 import { MessageCircle, Calendar, Sparkles } from 'lucide-react';
@@ -27,16 +27,22 @@ export default function App() {
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
   const [modalInitialData, setModalInitialData] = useState<any>({});
 
-  // 120Hz Butter-Smooth Momentum Scrolling Engine
+  // 120Hz Butter-Smooth Momentum Scrolling Engine (Zero Input Lag)
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.0,
+      duration: 0.65,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.2,
+      wheelMultiplier: 1.15,
+      touchMultiplier: 1.0,
+    });
+
+    lenis.on('scroll', (e: any) => {
+      if (typeof e?.progress === 'number') {
+        onLenisScrollUpdate(e.progress);
+      }
     });
 
     let rafId: number;
