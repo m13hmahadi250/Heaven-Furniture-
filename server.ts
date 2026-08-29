@@ -1,0 +1,143 @@
+import express, { Request, Response } from "express";
+import path from "path";
+import { createServer as createViteServer } from "vite";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const app = express();
+const PORT = 3000;
+
+app.use(express.json());
+
+// API health endpoint
+app.get("/api/health", (_req: Request, res: Response) => {
+  res.json({ status: "ok", brand: "Heaven Furniture Mart", location: "Agrabad, Chattogram" });
+});
+
+// AI Furniture & Interior Consultant Endpoint
+app.post("/api/ai-consultant", async (req: Request, res: Response) => {
+  try {
+    const { roomType, dimensions, stylePreference, woodChoice, budgetRange, specialNeeds } = req.body;
+
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      // Return intelligent handcrafted response if API key is not yet set by user
+      return res.json({
+        success: true,
+        recommendation: {
+          conceptName: `Bespoke ${woodChoice || "Chittagong Teak"} ${roomType || "Living"} Suite`,
+          designPhilosophy: `Crafted specifically for your ${dimensions || "custom space"} with a refined ${stylePreference || "Modern Luxury"} aesthetic. Engineered with seasoned timber to thrive in Chattogram's coastal humidity with zero warping.`,
+          timberSpecification: `${woodChoice || "Grade-A Chittagong Teak (Segun)"}, moisture-cured for 60 days, finished in hand-rubbed Danish oil and matte polyurethane seal.`,
+          recommendedLayout: [
+            "Floating focal piece oriented towards natural ambient lighting",
+            "Concealed cable management routing for pristine minimal lines",
+            "Ergonomically tuned seating angles (105° recline with high-resilience memory foam)",
+            "Accented with brushed champagne brass trims matching Heaven signature joinery"
+          ],
+          estimatedPriceRangeBDT: budgetRange === "Luxury Exclusive" ? "৳ 1,80,000 – ৳ 3,50,000" : "৳ 85,000 – ৳ 1,60,000",
+          craftingTimeDays: "18 - 25 business days",
+          nextStep: "Bring this concept to our Agrabad showroom or book a master craftsman home measurement."
+        }
+      });
+    }
+
+    // Lazy load Google GenAI SDK
+    const { GoogleGenAI } = await import("@google/genai");
+    const ai = new GoogleGenAI({ apiKey });
+
+    const prompt = `You are the Master Bespoke Furniture Artisan and Interior Architect at 'Heaven Furniture Mart', Chattogram's premier luxury bespoke furniture studio located on Agrabad Access Road, founded in 2020 by Abul Kalam Bhuiyan.
+    
+    A client is requesting a custom furniture & interior design concept for their home in Bangladesh.
+    Client Specifications:
+    - Room Type: ${roomType || "Living Room"}
+    - Dimensions / Space: ${dimensions || "Standard residential layout"}
+    - Preferred Style: ${stylePreference || "Warm Editorial Luxury"}
+    - Wood / Material Preference: ${woodChoice || "Chittagong Teak / Segun"}
+    - Budget Tier: ${budgetRange || "Premium Bespoke"}
+    - Special Notes: ${specialNeeds || "Durability, comfort, aesthetic beauty"}
+
+    Provide a sophisticated, editorial, and realistic response in JSON format with:
+    1. conceptName (e.g. 'The Agrabad Presidential Teak Suite' or 'Nasirabad Minimalist Dining Enclave')
+    2. designPhilosophy (2 sentences on why this tailored design elevates their lifestyle and handles Bangladesh climate)
+    3. timberSpecification (detailed wood, joinery, and finish specs)
+    4. recommendedLayout (array of 3-4 specific architectural design recommendations)
+    5. estimatedPriceRangeBDT (realistic Bangladeshi Taka range, e.g. '৳ 95,000 - ৳ 1,80,000')
+    6. craftingTimeDays (e.g. '18 - 24 business days')
+    7. nextStep (inspiring invitation to view material samples at Agrabad showroom or connect on WhatsApp)
+
+    Output STRICTLY pure JSON without markdown backticks.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+
+    const text = response.text || "";
+    let cleanJson = text.trim();
+    if (cleanJson.startsWith("```json")) {
+      cleanJson = cleanJson.replace(/^```json\n?/, "").replace(/\n?```$/, "");
+    } else if (cleanJson.startsWith("```")) {
+      cleanJson = cleanJson.replace(/^```\n?/, "").replace(/\n?```$/, "");
+    }
+
+    const parsed = JSON.parse(cleanJson);
+    return res.json({ success: true, recommendation: parsed });
+  } catch (error) {
+    console.error("AI Consultant error:", error);
+    // Fallback gracefully
+    return res.json({
+      success: true,
+      recommendation: {
+        conceptName: "Bespoke Heaven Masterpiece Suite",
+        designPhilosophy: "Precision tailored to your exact floorplan, utilizing seasoned Chittagong Teak and architectural joinery for lifelong durability.",
+        timberSpecification: "Grade-A Solid Teak (Segun) with hand-stitched Belgian upholstery and brushed brass hardware.",
+        recommendedLayout: [
+          "Custom scaled proportions matching room ceiling height",
+          "Balanced negative space for effortless airflow and luxury atmosphere",
+          "Concealed internal framing with lifetime structural warranty"
+        ],
+        estimatedPriceRangeBDT: "৳ 90,000 – ৳ 2,20,000",
+        craftingTimeDays: "20 business days",
+        nextStep: "Connect with our design director at +880 1960-481983 or visit Agrabad Access Road showroom."
+      }
+    });
+  }
+});
+
+// Consultation Booking / Instant Quote Lead Endpoint
+app.post("/api/book-consultation", (req: Request, res: Response) => {
+  const { name, phone, email, projectType, preferredDate, message } = req.body;
+  const bookingId = "HFM-" + Math.floor(100000 + Math.random() * 900000);
+  
+  res.json({
+    success: true,
+    bookingId,
+    message: `Consultation request received for ${name || 'Client'}. Our master artisan will contact you at ${phone} within 2 hours.`,
+    showroomLocation: "Agrabad Access Road, Chattogram",
+    directWhatsApp: "https://wa.me/8801960481983?text=" + encodeURIComponent(`Hello Heaven Furniture Mart! I booked consultation #${bookingId} for my ${projectType || 'furniture'} project.`)
+  });
+});
+
+async function startServer() {
+  if (process.env.NODE_ENV !== "production") {
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+    app.use(vite.middlewares);
+  } else {
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    app.get("*", (_req: Request, res: Response) => {
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+  }
+
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Heaven Furniture Mart server running on http://0.0.0.0:${PORT}`);
+  });
+}
+
+startServer();

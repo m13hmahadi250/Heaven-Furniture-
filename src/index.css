@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bg-deep: #050E0C;
+    --color-bg-card: #0D1A17;
+    --color-bg-card-hover: #132420;
+    --color-amber-accent: #F59E0B;
+    --color-amber-glow: rgba(245, 158, 11, 0.15);
+    --color-gold: #DFBE7B;
+    --color-text-main: #F5F5F5;
+    --color-text-muted: #8E8E93;
+    --color-border-subtle: rgba(255, 255, 255, 0.12);
+  }
+
+  body {
+    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color: var(--color-text-main);
+    background-color: var(--color-bg-deep);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Lenis 120Hz smooth scrolling styles */
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+
+  h1, h2, h3, .font-heading-bold {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+  }
+
+  .font-display-syne {
+    font-family: 'Syne', 'Outfit', sans-serif;
+  }
+}
+
+/* Custom smooth dark scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #F59E0B;
+}
+
+/* Bold Typography Stroke Utilities */
+.text-stroke-white {
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+}
+
+.text-stroke-amber {
+  -webkit-text-stroke: 1.5px rgba(245, 158, 11, 0.6);
+}
+
+.text-stroke-subtle {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Subtle glow & shadow utilities */
+.amber-glow {
+  box-shadow: 0 0 40px -10px rgba(245, 158, 11, 0.25);
+}
+
+.card-dark-border {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #121212;
+}
+
+.card-dark-border:hover {
+  border-color: rgba(245, 158, 11, 0.5);
+}
