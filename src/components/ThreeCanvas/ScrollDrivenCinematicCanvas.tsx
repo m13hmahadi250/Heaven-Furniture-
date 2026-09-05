@@ -168,67 +168,193 @@ const ArchitecturalSalonBackdrop: React.FC<{
     // Gentle camera parallax response
     meshRef.current.position.x = THREE.MathUtils.lerp(
       meshRef.current.position.x,
-      -px * 0.25 - p * 0.4,
+      -px * 0.3 - p * 0.35,
       0.05
     );
     meshRef.current.position.y = THREE.MathUtils.lerp(
       meshRef.current.position.y,
-      0.35 + py * 0.15 - p * 0.3,
+      0.35 + py * 0.18 - p * 0.25,
       0.05
     );
     meshRef.current.rotation.y = THREE.MathUtils.lerp(
       meshRef.current.rotation.y,
-      px * 0.03,
+      px * 0.04,
       0.05
     );
   });
 
   return (
-    <group position={[0, 0.3, -5.5]}>
+    <group position={[0, 0.2, -6.0]}>
       <mesh ref={meshRef}>
-        <planeGeometry args={[26, 15, 1, 1]} />
+        <planeGeometry args={[28, 16, 1, 1]} />
         <meshStandardMaterial
           map={texture || null}
-          color="#ffffff"
-          roughness={0.42}
-          metalness={0.06}
+          color="#FAF4EB"
+          roughness={0.45}
+          metalness={0.08}
         />
       </mesh>
 
-      {/* Deep Room Architectural Lighting */}
-      <pointLight position={[-4, 3, -3.5]} intensity={1.8} color="#FFDCAD" distance={12} />
-      <pointLight position={[4, 3, -3.5]} intensity={1.5} color="#FFE6C4" distance={12} />
+      {/* Deep Room Architectural Gallery Lighting */}
+      <pointLight position={[-5, 3.5, -4]} intensity={2.0} color="#FFDCB2" distance={14} />
+      <pointLight position={[5, 3.5, -4]} intensity={1.8} color="#FFE6C8" distance={14} />
     </group>
   );
 };
 
 // --------------------------------------------------------------------------
-// 5. Ambient Golden Dust Motes & Atmospheric Floating Bokeh
+// 4.1 3D Architectural Showroom Runway & Perspective Grid
+// --------------------------------------------------------------------------
+const ArchitecturalShowroomGrid: React.FC = () => {
+  const gridGroupRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!gridGroupRef.current) return;
+    const p = scrollState.progress;
+    const px = state.pointer.x;
+
+    // Fluid responsive motion with scroll depth & cursor tilt
+    gridGroupRef.current.position.z = -1.2 + (p * 4.0) % 1.0;
+    gridGroupRef.current.position.x = -px * 0.25;
+    gridGroupRef.current.rotation.y = px * 0.04;
+    gridGroupRef.current.rotation.z = -px * 0.015;
+  });
+
+  return (
+    <group ref={gridGroupRef} position={[0, -2.2, -1.8]}>
+      {/* Precision CAD Showroom Perspective Runway Grid */}
+      <gridHelper
+        args={[36, 36, '#F59E0B', '#3B2D1D']}
+        position={[0, 0, 0]}
+      />
+
+      {/* Showroom Floor Specular Reflection Plane */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.015, 0]}>
+        <planeGeometry args={[38, 38]} />
+        <meshStandardMaterial
+          color="#0A0907"
+          roughness={0.6}
+          metalness={0.45}
+        />
+      </mesh>
+
+      {/* Golden Horizon Guide Light Bar */}
+      <mesh position={[0, 0.02, -14]}>
+        <boxGeometry args={[34, 0.04, 0.04]} />
+        <meshBasicMaterial color="#F59E0B" transparent opacity={0.35} />
+      </mesh>
+
+      {/* Showroom Runway Center Guideline */}
+      <mesh position={[0, 0.01, -4]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.08, 18]} />
+        <meshBasicMaterial color="#D4AF37" transparent opacity={0.4} />
+      </mesh>
+    </group>
+  );
+};
+
+// --------------------------------------------------------------------------
+// 4.2 Floating 3D Joinery & Architectural CAD Geometry Orbiters
+// --------------------------------------------------------------------------
+const FloatingJoineryGeometry: React.FC = () => {
+  const group1Ref = useRef<THREE.Group>(null);
+  const group2Ref = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    const time = state.clock.elapsedTime;
+    const p = scrollState.progress;
+    const px = state.pointer.x;
+    const py = state.pointer.y;
+
+    if (group1Ref.current) {
+      group1Ref.current.rotation.x = time * 0.12 + py * 0.15;
+      group1Ref.current.rotation.y = time * 0.16 + px * 0.2;
+      group1Ref.current.rotation.z = time * 0.06;
+      group1Ref.current.position.y = 1.3 + Math.sin(time * 0.7) * 0.12 - p * 0.6;
+      group1Ref.current.position.x = -4.0 - px * 0.25;
+    }
+
+    if (group2Ref.current) {
+      group2Ref.current.rotation.x = -time * 0.1 - py * 0.15;
+      group2Ref.current.rotation.y = time * 0.14 + px * 0.2;
+      group2Ref.current.position.y = -0.5 + Math.cos(time * 0.8) * 0.14 - p * 0.4;
+      group2Ref.current.position.x = 4.2 - px * 0.25;
+    }
+  });
+
+  return (
+    <>
+      {/* Left Deep Dimension Ring & Isometric Joinery Cube */}
+      <group ref={group1Ref} position={[-4.0, 1.3, -3.2]}>
+        {/* Outer Orbital Dimension Ring */}
+        <mesh>
+          <ringGeometry args={[1.4, 1.42, 64]} />
+          <meshBasicMaterial color="#F59E0B" transparent opacity={0.28} side={THREE.DoubleSide} />
+        </mesh>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[1.4, 1.42, 64]} />
+          <meshBasicMaterial color="#FFE2A8" transparent opacity={0.16} side={THREE.DoubleSide} />
+        </mesh>
+        {/* Precision Wireframe Joinery Cube */}
+        <mesh>
+          <boxGeometry args={[0.95, 0.95, 0.95]} />
+          <meshBasicMaterial color="#D4AF37" wireframe transparent opacity={0.28} />
+        </mesh>
+      </group>
+
+      {/* Right Floating Precision Geodesic Joinery Knot */}
+      <group ref={group2Ref} position={[4.2, -0.5, -3.0]}>
+        <mesh>
+          <icosahedronGeometry args={[0.9, 1]} />
+          <meshBasicMaterial color="#E5C158" wireframe transparent opacity={0.22} />
+        </mesh>
+        <mesh rotation={[0, Math.PI / 4, 0]}>
+          <ringGeometry args={[1.25, 1.27, 48]} />
+          <meshBasicMaterial color="#F59E0B" transparent opacity={0.22} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+    </>
+  );
+};
+
+// --------------------------------------------------------------------------
+// 5. Volumetric Golden & Teak Craft Dust Particulates (120 Motes)
 // --------------------------------------------------------------------------
 const GoldenAmbientMotes: React.FC = () => {
   const pointsRef = useRef<THREE.Points>(null);
 
   const [particlePositions] = useMemo(() => {
-    const count = 48;
+    const count = 120;
     const pos = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 14;
-      pos[i * 3 + 1] = Math.random() * 5.0 - 2.0;
-      pos[i * 3 + 2] = Math.random() * 4.5 - 2.5;
+      pos[i * 3] = (Math.random() - 0.5) * 22;
+      pos[i * 3 + 1] = Math.random() * 9.0 - 4.5;
+      pos[i * 3 + 2] = Math.random() * 8.0 - 5.0;
     }
     return [pos];
   }, []);
 
   useFrame((state, delta) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y += delta * 0.022;
-      pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.25) * 0.03;
+      pointsRef.current.rotation.y += delta * 0.024;
+      pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.035;
+      // Responsive pointer sway
+      pointsRef.current.position.x = THREE.MathUtils.lerp(
+        pointsRef.current.position.x,
+        state.pointer.x * 0.4,
+        0.05
+      );
+      pointsRef.current.position.y = THREE.MathUtils.lerp(
+        pointsRef.current.position.y,
+        state.pointer.y * 0.25,
+        0.05
+      );
     }
   });
 
   return (
-    <group position={[0, 0.5, -0.8]}>
+    <group position={[0, 0.4, -0.6]}>
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -237,11 +363,12 @@ const GoldenAmbientMotes: React.FC = () => {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={0.065}
-          color="#FFE2A8"
+          size={0.072}
+          color="#FFDF9E"
           transparent
           opacity={0.85}
           blending={THREE.AdditiveBlending}
+          depthWrite={false}
         />
       </points>
     </group>
@@ -399,16 +526,23 @@ const CinematicStageOrchestrator: React.FC<ScrollDrivenCinematicCanvasProps> = (
       if (onSectionChange) onSectionChange(sectionIndex);
     }
 
+    // Dynamic 3D Camera parallax responding smoothly to cursor and scroll depth
+    const targetCamX = state.pointer.x * 0.4;
+    const targetCamY = 0.15 + state.pointer.y * 0.22 - p * 0.35;
+    state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, targetCamX, delta * 3.0);
+    state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, targetCamY, delta * 3.0);
+    state.camera.lookAt(0, 0, -2.5);
+
     // Dynamic mouse spotlight tracking
     if (mouseLightRef.current) {
       mouseLightRef.current.position.x = THREE.MathUtils.lerp(
         mouseLightRef.current.position.x,
-        state.pointer.x * 2.8 + 1.0,
+        state.pointer.x * 3.2,
         0.08
       );
       mouseLightRef.current.position.y = THREE.MathUtils.lerp(
         mouseLightRef.current.position.y,
-        state.pointer.y * 2.0 + 0.8,
+        state.pointer.y * 2.2 + 0.6,
         0.08
       );
     }
@@ -416,13 +550,19 @@ const CinematicStageOrchestrator: React.FC<ScrollDrivenCinematicCanvasProps> = (
 
   return (
     <group>
-      {/* 1. Deep Parallax Neoclassical Salon Interior Backdrop */}
+      {/* 1. 3D Architectural Showroom Perspective Runway Grid */}
+      <ArchitecturalShowroomGrid />
+
+      {/* 2. Floating Precision Joinery Geometry & CAD Orbital Dimension Rings */}
+      <FloatingJoineryGeometry />
+
+      {/* 3. Deep Parallax Neoclassical Salon Interior Backdrop */}
       <ArchitecturalSalonBackdrop texture={backdropTexture} />
 
-      {/* 2. Ambient Floating Golden Bokeh Dust */}
+      {/* 4. Volumetric Golden & Teak Craft Dust Particulates (120 Motes) */}
       <GoldenAmbientMotes />
 
-      {/* 3. Ultra-Realistic Interactive 2.5D Depth-Mesh Furniture Showcase */}
+      {/* 5. Ultra-Realistic Interactive 2.5D Depth-Mesh Furniture Showcase */}
       {SHOWCASE_ITEMS.map((item, idx) => (
         <DepthMeshHeroPlane
           key={item.id}
@@ -433,13 +573,13 @@ const CinematicStageOrchestrator: React.FC<ScrollDrivenCinematicCanvasProps> = (
         />
       ))}
 
-      {/* 4. Cursor Interactive Dynamic Spotlight */}
+      {/* 6. Cursor Interactive Dynamic Spotlight */}
       <pointLight
         ref={mouseLightRef}
         position={[1.5, 1.2, 2.2]}
-        intensity={1.2}
+        intensity={1.4}
         color="#FFE9C2"
-        distance={6.5}
+        distance={7.0}
       />
     </group>
   );
@@ -516,7 +656,7 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
       className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden"
       style={{
         background:
-          'radial-gradient(ellipse at 72% 35%, #22342E 0%, #14221E 35%, #0B1311 70%, #050807 100%)',
+          'radial-gradient(ellipse at 50% 18%, #1A130D 0%, #100D0B 38%, #080706 72%, #030303 100%)',
         contain: 'strict',
         willChange: 'transform',
         transform: 'translate3d(0,0,0)',
@@ -525,7 +665,7 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
       {hasWebGL && (
         <Canvas
           dpr={[1, typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 1.25) : 1]}
-          camera={{ position: [0, 0.1, 4.2], fov: 38 }}
+          camera={{ position: [0, 0.15, 4.2], fov: 38 }}
           gl={{
             antialias: false,
             alpha: true,
@@ -534,39 +674,39 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
             stencil: false,
             depth: true,
             toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.2,
+            toneMappingExposure: 1.25,
           }}
           className="w-full h-full"
         >
           {/* Locked 60 FPS Render Throttler: Prevents 90Hz/120Hz/144Hz GPU overdrive on mobile displays */}
           <FrameRateThrottler targetFps={60} />
 
-          {/* Atmospheric Depth Mist - Soft distant falloff */}
-          <fog attach="fog" args={['#081411', 14.0, 36.0]} />
+          {/* Atmospheric Depth Mist - Warm showroom studio falloff */}
+          <fog attach="fog" args={['#080706', 7.0, 24.0]} />
 
           {/* Three-Point Luxury Studio Illumination */}
           {/* 1. Warm Golden Key Light */}
           <directionalLight
-            position={[-4.5, 6.0, 3.5]}
-            intensity={2.4}
-            color="#FFF7EC"
+            position={[-4.5, 6.5, 4.0]}
+            intensity={2.8}
+            color="#FFF4E3"
           />
 
-          {/* 2. Soft Ambient Salon Fill */}
-          <ambientLight intensity={1.1} color="#FFFBF5" />
+          {/* 2. Soft Ambient Salon Warmth */}
+          <ambientLight intensity={1.25} color="#FFF5E8" />
 
           {/* 3. Cool Accent Sky/Window Fill */}
           <directionalLight
-            position={[4.0, 4.0, 2.5]}
-            intensity={0.8}
-            color="#A8C8E5"
+            position={[4.5, 4.0, 3.0]}
+            intensity={0.9}
+            color="#C7DCF0"
           />
 
-          {/* 4. Golden Rim Backlight */}
+          {/* 4. Golden Teak Rim Backlight */}
           <directionalLight
-            position={[0, 4.5, -3.5]}
-            intensity={1.2}
-            color="#FFC56E"
+            position={[0, 5.0, -3.5]}
+            intensity={1.5}
+            color="#F59E0B"
           />
 
           <CinematicStageOrchestrator
@@ -576,16 +716,22 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
         </Canvas>
       )}
 
-      {/* Layer 1: Left-to-Right Editorial Vignette ensuring crisp text legibility while revealing background salon */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#030807]/85 via-[#030807]/35 to-transparent pointer-events-none" />
+      {/* Layer 1: Left-to-Right Warm Editorial Vignette ensuring crisp text legibility */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#050404]/80 via-[#050404]/30 to-transparent pointer-events-none" />
 
       {/* Layer 2: Top-and-Bottom Architectural Soft Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#030807]/60 via-transparent to-[#030807]/80 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050404]/60 via-transparent to-[#050404]/80 pointer-events-none" />
 
       {/* Layer 3: Warm Golden Studio Rim Glow Accent on Right Edge */}
       <div
-        className="absolute top-1/4 right-0 w-[550px] h-[550px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, transparent 70%)' }}
+        className="absolute top-1/4 right-0 w-[600px] h-[600px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%)' }}
+      />
+
+      {/* Layer 4: Deep Teak Artisan Glow on Top-Left */}
+      <div
+        className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(163, 92, 43, 0.12) 0%, transparent 70%)' }}
       />
     </div>
   );

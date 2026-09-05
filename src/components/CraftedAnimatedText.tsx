@@ -298,6 +298,26 @@ export function CraftedAnimatedText() {
     ];
   }, []);
 
+  // Authentic seasoned natural oak & Chittagong teakwood timber grain texture
+  const woodTextureStyle: React.CSSProperties = {
+    backgroundColor: '#8E6436',
+    backgroundImage: `
+      linear-gradient(180deg, rgba(230, 202, 158, 0.5) 0%, rgba(175, 135, 85, 0.45) 45%, rgba(110, 75, 38, 0.7) 100%),
+      repeating-linear-gradient(88deg, transparent 0px, rgba(70, 42, 16, 0.3) 1px, transparent 2px, transparent 6px, rgba(90, 55, 24, 0.35) 7px, transparent 9px),
+      repeating-linear-gradient(90deg, #D6B27C 0px, #C8A36C 2px, #AA824B 4px, #CDA872 6px, #966F38 8px, #D2AD77 11px, #A47C43 13px, #C59F67 16px, #88622D 18px, #D6B27C 22px),
+      url('https://images.unsplash.com/photo-1546484396-fb3fc6f95f98?auto=format&fit=crop&w=1200&q=80')
+    `,
+    backgroundSize: '100% 100%, 100% 100%, 48px 100%, cover',
+    backgroundPosition: 'center, center, center, center',
+    backgroundBlendMode: 'multiply, normal, normal, multiply',
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    color: 'transparent',
+    WebkitTextStroke: '0.85px rgba(235, 208, 162, 0.75)',
+    filter: 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.9)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7))',
+  };
+
   return (
     <span className="inline-block relative select-none">
       {/* Embedded 100% GPU Compositor Keyframes - 0ms Main-Thread CPU Overhead */}
@@ -329,10 +349,40 @@ export function CraftedAnimatedText() {
           -webkit-backface-visibility: hidden;
           transform: translateZ(0);
         }
+
+        .joinery-dowel-pin {
+          position: absolute;
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #ECCB97 0%, #A87E4B 60%, #5E3D18 100%);
+          border: 0.5px solid rgba(255, 225, 175, 0.85);
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+          transform: translate(-50%, -50%) scale(0);
+          animation: pinLock 5.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+          animation-delay: var(--delay);
+          pointer-events: none;
+          z-index: 10;
+        }
+
+        @keyframes pinLock {
+          0%, 14% {
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+          }
+          20%, 88% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.9;
+          }
+          94%, 100% {
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+          }
+        }
       `}</style>
 
-      {/* Main typographic container retaining exact text-stroke-white & font metrics */}
-      <span className="inline-flex tracking-tighter uppercase font-black text-transparent text-stroke-white font-heading-bold relative">
+      {/* Main typographic container retaining exact typography & font metrics */}
+      <span className="inline-flex tracking-tighter uppercase font-black font-heading-bold relative">
         {letters.map((letterItem) => (
           <span
             key={letterItem.char}
@@ -343,13 +393,26 @@ export function CraftedAnimatedText() {
               {letterItem.char}
             </span>
 
-            {/* The 3 modular furniture joinery blocks running on pure GPU Compositor */}
+            {/* Subtle architectural grain guide track underneath */}
+            <span
+              className="absolute inset-0 select-none pointer-events-none opacity-20 font-black font-heading-bold"
+              style={{
+                ...woodTextureStyle,
+                filter: 'none',
+                WebkitTextStroke: '0.75px rgba(220, 185, 135, 0.3)',
+              }}
+            >
+              {letterItem.char}
+            </span>
+
+            {/* The 3 modular furniture joinery blocks styled in authentic seasoned hardwood timber */}
             {letterItem.segments.map((segment) => (
               <span
                 key={segment.id}
-                className="joinery-segment absolute inset-0 select-none text-transparent text-stroke-white pointer-events-none"
+                className="joinery-segment absolute inset-0 select-none pointer-events-none font-heading-bold"
                 style={
                   {
+                    ...woodTextureStyle,
                     clipPath: segment.clipPath,
                     WebkitClipPath: segment.clipPath,
                     '--ix': `${segment.initX}px`,
@@ -363,6 +426,24 @@ export function CraftedAnimatedText() {
                 {letterItem.char}
               </span>
             ))}
+
+            {/* Mortise dowel pins ("প্যারাগ") appearing at joinery intersections */}
+            {letterItem.segments.map(
+              (segment) =>
+                segment.pinPos && (
+                  <span
+                    key={`pin-${segment.id}`}
+                    className="joinery-dowel-pin"
+                    style={
+                      {
+                        top: segment.pinPos.top,
+                        left: segment.pinPos.left,
+                        '--delay': `${segment.delay + 0.4}s`,
+                      } as React.CSSProperties
+                    }
+                  />
+                )
+            )}
           </span>
         ))}
       </span>
