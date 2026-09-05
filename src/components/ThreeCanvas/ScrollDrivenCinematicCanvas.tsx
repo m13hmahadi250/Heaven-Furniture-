@@ -1,6 +1,7 @@
 import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { getOrLoadTexture, preloadCriticalImages } from '../../utils/assetCache';
 
 interface ScrollDrivenCinematicCanvasProps {
   onSectionChange?: (sectionIndex: number) => void;
@@ -112,34 +113,38 @@ const SALON_BACKDROP_IMAGE =
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=85';
 
 // --------------------------------------------------------------------------
-// 3. Texture Loader Hook with Smooth Caching
+// 3. Texture Loader Hook with Zero-Lag Memory & Storage Caching
 // --------------------------------------------------------------------------
 const useShowcaseTextures = () => {
   const [textures, setTextures] = useState<{ [key: string]: THREE.Texture }>({});
   const [backdropTexture, setBackdropTexture] = useState<THREE.Texture | null>(null);
 
   useEffect(() => {
+    // Pre-decode all showcase imagery in browser idle cycles for zero-stutter transitions
+    preloadCriticalImages([
+      SALON_BACKDROP_IMAGE,
+      ...SHOWCASE_ITEMS.map((item) => item.imageUrl),
+    ]);
+
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin('anonymous');
 
-    // Load backdrop
-    loader.load(SALON_BACKDROP_IMAGE, (tex) => {
-      tex.colorSpace = THREE.SRGBColorSpace;
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      tex.generateMipmaps = false;
+    // Load or retrieve cached backdrop
+    const cachedBackdrop = getOrLoadTexture(loader, SALON_BACKDROP_IMAGE, (tex) => {
       setBackdropTexture(tex);
     });
+    if (cachedBackdrop) {
+      setBackdropTexture(cachedBackdrop);
+    }
 
-    // Load showcase item images
+    // Load or retrieve cached showcase item images
     SHOWCASE_ITEMS.forEach((item) => {
-      loader.load(item.imageUrl, (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace;
-        tex.minFilter = THREE.LinearFilter;
-        tex.magFilter = THREE.LinearFilter;
-        tex.generateMipmaps = false;
+      const cachedTex = getOrLoadTexture(loader, item.imageUrl, (tex) => {
         setTextures((prev) => ({ ...prev, [item.id]: tex }));
       });
+      if (cachedTex) {
+        setTextures((prev) => ({ ...prev, [item.id]: cachedTex }));
+      }
     });
   }, []);
 
@@ -258,10 +263,10 @@ const DepthMeshHeroPlane: React.FC<{
   const matRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const opacityRef = useRef(isActive ? 1 : 0);
 
-  // High-density subdivided curved plane for optical 3D depth flexion
+  // Lightweight optimized curved plane for optical 3D depth flexion (zero geometry bottleneck)
   const curvedGeometry = useMemo(() => {
     const [w, h] = [item.baseScale[0], item.baseScale[1]];
-    const geom = new THREE.PlaneGeometry(w, h, 36, 36);
+    const geom = new THREE.PlaneGeometry(w, h, 14, 14);
     const pos = geom.attributes.position;
 
     // Apply subtle spherical optical curvature along edges for realistic convex depth
@@ -279,16 +284,16 @@ const DepthMeshHeroPlane: React.FC<{
   useFrame((state, delta) => {
     if (!groupRef.current || !meshRef.current) return;
 
-    // Smooth transition opacity
+    // Fast smooth transition opacity
     const targetOpacity = isActive ? 1.0 : 0.0;
-    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, delta * 5.0);
+    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, delta * 6.0);
 
     if (matRef.current) {
       matRef.current.opacity = opacityRef.current;
       matRef.current.transparent = true;
     }
 
-    // Hide inactive layers completely to conserve rendering draw calls
+    // Hide inactive layers completely to skip vertex and fragment shader work
     groupRef.current.visible = opacityRef.current > 0.01;
     if (!groupRef.current.visible) return;
 
@@ -332,17 +337,13 @@ const DepthMeshHeroPlane: React.FC<{
 
   return (
     <group ref={groupRef} position={[0.95, -0.15, -0.5]}>
-      {/* 1. Main Realistic 2.5D Depth Curved Hero Mesh */}
+      {/* 1. Main Realistic 2.5D Depth Curved Hero Mesh - High Performance Standard Material */}
       <mesh ref={meshRef} geometry={curvedGeometry}>
-        <meshPhysicalMaterial
-          ref={matRef}
+        <meshStandardMaterial
+          ref={matRef as any}
           map={texture || null}
-          roughness={0.32}
-          metalness={0.08}
-          clearcoat={0.35}
-          clearcoatRoughness={0.25}
-          sheen={0.85}
-          sheenColor={new THREE.Color(item.accentColor)}
+          roughness={0.34}
+          metalness={0.06}
           toneMapped={true}
         />
       </mesh>
@@ -353,7 +354,7 @@ const DepthMeshHeroPlane: React.FC<{
         <meshBasicMaterial
           color={item.rimColor}
           transparent={true}
-          opacity={0.18}
+          opacity={0.16}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
@@ -367,14 +368,6 @@ const DepthMeshHeroPlane: React.FC<{
           opacity={0.65}
         />
       </mesh>
-
-      {/* 4. Individual Intimate Golden Accent Light Tracking the Selected Furniture */}
-      <pointLight
-        position={[0.8, 0.6, 1.2]}
-        intensity={0.9}
-        color={item.rimColor}
-        distance={4.2}
-      />
     </group>
   );
 };
@@ -467,7 +460,45 @@ const isWebGLSupported = (): boolean => {
 };
 
 // --------------------------------------------------------------------------
-// 8. Main Exported Component: Ultra-Realistic 2.5D Parallax & Depth Canvas
+// 8. 60 FPS Render Loop Throttler
+// Intercepts R3F's rendering pipeline with priority: 1, locking the 3D scene
+// to a crisp 60fps maximum cadence. On 90Hz, 120Hz, and 144Hz high-refresh
+// mobile displays (e.g., iPhone ProMotion, high-end Androids), this prevents
+// wasteful 120fps GPU draw passes, reducing thermal throttling and battery drain.
+// --------------------------------------------------------------------------
+export function useFrameThrottler(targetFps: number = 60) {
+  const lastTimeRef = useRef<number>(0);
+  const frameInterval = 1000 / targetFps;
+
+  useFrame((state) => {
+    // Idle optimization: skip rendering passes when tab is in background or invisible
+    if (typeof document !== 'undefined' && document.hidden) {
+      return;
+    }
+
+    const now = performance.now();
+    if (!lastTimeRef.current) {
+      lastTimeRef.current = now;
+      state.gl.render(state.scene, state.camera);
+      return;
+    }
+
+    const elapsed = now - lastTimeRef.current;
+    if (elapsed >= frameInterval) {
+      // Modulo subtraction prevents cumulative frame-pacing drift
+      lastTimeRef.current = now - (elapsed % frameInterval);
+      state.gl.render(state.scene, state.camera);
+    }
+  }, 1); // priority: 1 overrides R3F default auto-rendering loop
+}
+
+export const FrameRateThrottler: React.FC<{ targetFps?: number }> = ({ targetFps = 60 }) => {
+  useFrameThrottler(targetFps);
+  return null;
+};
+
+// --------------------------------------------------------------------------
+// 9. Main Exported Component: Ultra-Realistic 2.5D Parallax & Depth Canvas
 // --------------------------------------------------------------------------
 export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasProps> = ({
   onSectionChange,
@@ -493,19 +524,23 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
     >
       {hasWebGL && (
         <Canvas
-          dpr={[1, typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 1.5) : 1]}
+          dpr={[1, typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 1.25) : 1]}
           camera={{ position: [0, 0.1, 4.2], fov: 38 }}
           gl={{
-            antialias: true,
+            antialias: false,
             alpha: true,
             powerPreference: 'high-performance',
+            precision: 'mediump',
             stencil: false,
             depth: true,
             toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.25,
+            toneMappingExposure: 1.2,
           }}
           className="w-full h-full"
         >
+          {/* Locked 60 FPS Render Throttler: Prevents 90Hz/120Hz/144Hz GPU overdrive on mobile displays */}
+          <FrameRateThrottler targetFps={60} />
+
           {/* Atmospheric Depth Mist - Soft distant falloff */}
           <fog attach="fog" args={['#081411', 14.0, 36.0]} />
 
@@ -548,7 +583,10 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
       <div className="absolute inset-0 bg-gradient-to-b from-[#030807]/60 via-transparent to-[#030807]/80 pointer-events-none" />
 
       {/* Layer 3: Warm Golden Studio Rim Glow Accent on Right Edge */}
-      <div className="absolute top-1/4 right-0 w-[550px] h-[550px] bg-amber-500/15 rounded-full blur-[140px] pointer-events-none" />
+      <div
+        className="absolute top-1/4 right-0 w-[550px] h-[550px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, transparent 70%)' }}
+      />
     </div>
   );
 };

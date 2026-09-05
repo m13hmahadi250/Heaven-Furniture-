@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { COLLECTIONS_DATA, BRAND_INFO } from '../data/furnitureData';
 import { FurnitureCategory, CollectionItem } from '../types';
 import { FurnitureViewer3D } from './ThreeCanvas/FurnitureViewer3D';
+import { CollectionCardSkeleton } from './SkeletonLoaders';
 import { motion } from 'motion/react';
 import {
   Sparkles,
@@ -48,6 +49,85 @@ interface CollectionsSnapshotProps {
   onOpenConsultation: (initialData?: any) => void;
   onCustomizeIn3D: (item: CollectionItem) => void;
 }
+
+const ProductCardImageStage: React.FC<{
+  item: CollectionItem;
+  onOpenDetails: () => void;
+  onOpen3D: () => void;
+}> = ({ item, onOpenDetails, onOpen3D }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <div
+      className="relative h-68 sm:h-76 overflow-hidden bg-[#070C0B] cursor-pointer group"
+      onClick={onOpenDetails}
+    >
+      {/* Lightweight SVG Skeleton Loader: active until image is fully hydrated */}
+      <div
+        className={`absolute inset-0 z-0 transition-opacity duration-500 ${
+          isLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+      >
+        <CollectionCardSkeleton />
+      </div>
+
+      <img
+        src={item.imageUrl}
+        alt={item.title}
+        referrerPolicy="no-referrer"
+        loading="lazy"
+        onLoad={() => setIsLoaded(true)}
+        className={`relative z-[1] w-full h-full object-cover group-hover:scale-108 transition-all duration-700 ${
+          isLoaded ? 'opacity-95 group-hover:opacity-100' : 'opacity-0'
+        }`}
+        onError={(e) => {
+          (e.target as HTMLImageElement).src =
+            'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80';
+          setIsLoaded(true);
+        }}
+      />
+
+      {/* Category Pill */}
+      <div className="absolute top-4 left-4 z-10">
+        <span className="px-3.5 py-1 bg-black/85 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
+          {item.categoryLabel}
+        </span>
+      </div>
+
+      {/* Top Right Quick Actions */}
+      <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen3D();
+          }}
+          className="bg-amber-500 text-black px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-xl hover:scale-105 transition-all"
+          title="Open 3D Turntable"
+        >
+          <Box className="w-3.5 h-3.5" />
+          <span>3D View</span>
+        </button>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenDetails();
+          }}
+          className="bg-black/75 hover:bg-white text-white hover:text-black p-2 rounded-full backdrop-blur-md border border-white/20 transition-all shadow-xl"
+          title="Enlarge Photo & Specifications"
+        >
+          <Maximize2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* Lead time badge */}
+      <div className="absolute bottom-4 right-4 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] text-gray-300 font-bold uppercase tracking-wider flex items-center gap-1.5 border border-white/10 z-10">
+        <Clock className="w-3 h-3 text-amber-500" />
+        <span>{item.leadTime}</span>
+      </div>
+    </div>
+  );
+};
 
 export const CollectionsSnapshot: React.FC<CollectionsSnapshotProps> = ({
   onOpenConsultation,
@@ -158,60 +238,12 @@ export const CollectionsSnapshot: React.FC<CollectionsSnapshotProps> = ({
               variants={itemVariants}
               className="bg-[#121212] rounded-3xl border border-white/10 overflow-hidden hover:border-amber-500/50 transition-all group flex flex-col shadow-2xl hover:shadow-amber-500/10"
             >
-              {/* Product Image Stage */}
-              <div
-                className="relative h-68 sm:h-76 overflow-hidden bg-[#0A0A0A] cursor-pointer group"
-                onClick={() => setDetailedModalItem(item)}
-              >
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 opacity-95 group-hover:opacity-100"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80';
-                  }}
-                />
-                
-                {/* Category Pill */}
-                <div className="absolute top-4 left-4">
-                  <span className="px-3.5 py-1 bg-black/85 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
-                    {item.categoryLabel}
-                  </span>
-                </div>
-
-                {/* Top Right Quick Actions */}
-                <div className="absolute top-4 right-4 flex items-center gap-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setQuickInspectItem(item);
-                    }}
-                    className="bg-amber-500 text-black px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-xl hover:scale-105 transition-all"
-                    title="Open 3D Turntable"
-                  >
-                    <Box className="w-3.5 h-3.5" />
-                    <span>3D View</span>
-                  </button>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDetailedModalItem(item);
-                    }}
-                    className="bg-black/75 hover:bg-white text-white hover:text-black p-2 rounded-full backdrop-blur-md border border-white/20 transition-all shadow-xl"
-                    title="Enlarge Photo & Specifications"
-                  >
-                    <Maximize2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                {/* Lead time badge */}
-                <div className="absolute bottom-4 right-4 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] text-gray-300 font-bold uppercase tracking-wider flex items-center gap-1.5 border border-white/10">
-                  <Clock className="w-3 h-3 text-amber-500" />
-                  <span>{item.leadTime}</span>
-                </div>
-              </div>
+              {/* Product Image Stage with Lightweight SVG Skeleton Loader */}
+              <ProductCardImageStage
+                item={item}
+                onOpenDetails={() => setDetailedModalItem(item)}
+                onOpen3D={() => setQuickInspectItem(item)}
+              />
 
               {/* Content Body */}
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
@@ -335,13 +367,14 @@ export const CollectionsSnapshot: React.FC<CollectionsSnapshotProps> = ({
             <div className="p-6 overflow-y-auto flex-1 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                 
-                {/* Large High-Res Image Showcase */}
-                <div className="md:col-span-7 rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl max-h-[380px] flex items-center justify-center">
+                {/* Large High-Res Image Showcase with Skeleton */}
+                <div className="md:col-span-7 rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl max-h-[380px] min-h-[260px] flex items-center justify-center relative">
+                  <CollectionCardSkeleton variant="modal" className="absolute inset-0 z-0" />
                   <img
                     src={detailedModalItem.imageUrl}
                     alt={detailedModalItem.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-contain max-h-[380px]"
+                    className="relative z-[1] w-full h-full object-contain max-h-[380px]"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80';
                     }}

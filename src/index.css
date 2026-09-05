@@ -23,6 +23,10 @@
     text-rendering: optimizeLegibility;
   }
 
+  html {
+    scroll-behavior: auto !important;
+  }
+
   /* Lenis 120Hz smooth scrolling styles */
   html.lenis, html.lenis body {
     height: auto;

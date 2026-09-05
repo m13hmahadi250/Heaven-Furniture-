@@ -120,6 +120,15 @@ app.post("/api/book-consultation", (req: Request, res: Response) => {
   });
 });
 
+// Serve Service Worker with proper scope and no-cache header
+app.get("/sw.js", (_req: Request, res: Response) => {
+  res.setHeader("Service-Worker-Allowed", "/");
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Content-Type", "application/javascript");
+  const swPath = path.join(process.cwd(), "public", "sw.js");
+  res.sendFile(swPath);
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
@@ -129,8 +138,23 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
+    app.use(
+      express.static(distPath, {
+        maxAge: "1y",
+        immutable: true,
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith("sw.js") || filePath.endsWith("index.html")) {
+            res.setHeader("Cache-Control", "no-cache, must-revalidate");
+          } else if (filePath.endsWith(".svg") || filePath.endsWith(".json")) {
+            res.setHeader("Cache-Control", "public, max-age=86400");
+          } else {
+            res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+          }
+        },
+      })
+    );
     app.get("*", (_req: Request, res: Response) => {
+      res.setHeader("Cache-Control", "no-cache, must-revalidate");
       res.sendFile(path.join(distPath, "index.html"));
     });
   }

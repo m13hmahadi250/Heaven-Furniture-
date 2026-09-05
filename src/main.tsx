@@ -3,6 +3,10 @@ import {createRoot} from 'react-dom/client';
 import * as THREE from 'three';
 import App from './App.tsx';
 import './index.css';
+import { registerAppServiceWorker } from './utils/assetCache';
+
+// Initialize Service Worker cache & offline precache engine
+registerAppServiceWorker();
 
 // Configure Three.js logging to suppress known upstream deprecation notice (THREE.Clock used in R3F store)
 // and non-fatal DirectX/ANGLE shader precision notes (warning X4122)

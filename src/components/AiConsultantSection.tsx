@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Bot, ArrowRight, CheckCircle2, Trees, RefreshCw, Send, Calendar } from 'lucide-react';
 import { BRAND_INFO } from '../data/furnitureData';
+import { getCachedApiResponse, setCachedApiResponse } from '../utils/assetCache';
 
 interface AiConsultantSectionProps {
   onOpenConsultation: (initialData?: any) => void;
@@ -20,6 +21,19 @@ export const AiConsultantSection: React.FC<AiConsultantSectionProps> = ({ onOpen
   const handleGenerateProposal = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    const cacheKey = `ai_proposal_${roomType}_${dimensions}_${stylePreference}_${woodChoice}_${budgetRange}_${specialNeeds}`
+      .toLowerCase()
+      .replace(/\s+/g, '_');
+
+    // Instant retrieval from client cache if available (0ms response)
+    const cached = getCachedApiResponse<any>(cacheKey);
+    if (cached) {
+      setRecommendation(cached);
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('/api/ai-consultant', {
         method: 'POST',
@@ -36,6 +50,7 @@ export const AiConsultantSection: React.FC<AiConsultantSectionProps> = ({ onOpen
       const data = await response.json();
       if (data.success && data.recommendation) {
         setRecommendation(data.recommendation);
+        setCachedApiResponse(cacheKey, data.recommendation);
       }
     } catch (err) {
       console.error('AI Consultant fetch failed:', err);

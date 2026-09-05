@@ -29,16 +29,17 @@ export default function App() {
   const [modalInitialData, setModalInitialData] = useState<any>({});
   const [activeHeroModelIndex, setActiveHeroModelIndex] = useState(0);
 
-  // 120Hz Butter-Smooth Momentum Scrolling Engine (Zero Input Lag)
+  // 120Hz Butter-Smooth Momentum Scrolling Engine (Zero Input Lag & Lightweight)
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 0.65,
+      duration: 0.9,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.15,
+      wheelMultiplier: 1.0,
       touchMultiplier: 1.0,
+      syncTouch: false,
     });
 
     lenis.on('scroll', (e: any) => {

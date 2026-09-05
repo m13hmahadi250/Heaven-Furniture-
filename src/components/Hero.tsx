@@ -108,9 +108,15 @@ export const Hero: React.FC<HeroProps> = ({
       <div className="absolute inset-0 bg-gradient-to-r from-[#040807]/92 via-[#040807]/65 to-[#040807]/30 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-b from-[#040807]/60 via-transparent to-[#040807]/85 pointer-events-none" />
 
-      {/* Dynamic luxury ambient spotlight glows */}
-      <div className="absolute top-0 right-1/4 w-[650px] h-[650px] bg-amber-500/15 rounded-full blur-[180px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-950/30 rounded-full blur-[140px] pointer-events-none" />
+      {/* Dynamic luxury ambient spotlight glows with zero-cost radial gradients */}
+      <div
+        className="absolute top-0 right-1/4 w-[650px] h-[650px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, transparent 70%)' }}
+      />
+      <div
+        className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(6, 78, 59, 0.25) 0%, transparent 70%)' }}
+      />
 
       {/* Watermark Background Typography */}
       <div className="absolute top-1/2 -right-16 -translate-y-1/2 select-none pointer-events-none text-[160px] lg:text-[240px] font-black uppercase text-white/[0.03] tracking-tighter leading-none whitespace-nowrap z-0">

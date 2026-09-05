@@ -28,6 +28,7 @@ import {
   DimensionUnit,
   ModelDimensions
 } from './DimensionOverlay3D';
+import { Studio3DViewportSkeleton } from '../SkeletonLoaders';
 
 export type LightingMood = 'warm-studio' | 'daylight' | 'dark-luxury' | 'golden-hour';
 
@@ -977,6 +978,8 @@ export const FurnitureViewer3D: React.FC<FurnitureViewer3DProps> = ({
     }
   }, [activeMood]);
 
+  const [isCanvasReady, setIsCanvasReady] = useState(false);
+
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
     if (!document.fullscreenElement) {
@@ -989,10 +992,20 @@ export const FurnitureViewer3D: React.FC<FurnitureViewer3DProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full bg-gradient-to-b from-[#0F0F0F] via-[#0A0A0A] to-[#050505] select-none group font-sans"
+      className="relative w-full h-full bg-gradient-to-b from-[#0F0F0F] via-[#0A0A0A] to-[#050505] select-none group font-sans overflow-hidden"
     >
+      {/* Lightweight SVG Skeleton Loader: visible during WebGL compiling & 3D asset hydration */}
+      <div
+        className={`absolute inset-0 z-20 pointer-events-none transition-opacity duration-700 ${
+          isCanvasReady ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <Studio3DViewportSkeleton />
+      </div>
+
       {/* 3D Canvas Context */}
       <Canvas
+        onCreated={() => setIsCanvasReady(true)}
         frameloop={isVisible ? 'always' : 'never'}
         dpr={[1, typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 1.5) : 1]}
         camera={{ position: [2.8, 2.0, 3.2], fov: 42 }}
