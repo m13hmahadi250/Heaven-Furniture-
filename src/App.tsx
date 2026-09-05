@@ -22,10 +22,12 @@ import { RevealOnScroll } from './components/RevealOnScroll';
 import { CollectionItem } from './types';
 import { MessageCircle, Calendar, Sparkles } from 'lucide-react';
 import { BRAND_INFO } from './data/furnitureData';
+import { SpatialAudioControl } from './components/SpatialAudioControl';
 
 export default function App() {
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
   const [modalInitialData, setModalInitialData] = useState<any>({});
+  const [activeHeroModelIndex, setActiveHeroModelIndex] = useState(0);
 
   // 120Hz Butter-Smooth Momentum Scrolling Engine (Zero Input Lag)
   useEffect(() => {
@@ -82,7 +84,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-transparent text-[#F5F5F5] font-sans antialiased selection:bg-[#F59E0B]/30 selection:text-white relative overflow-x-hidden">
       
       {/* Fixed Scroll-Driven 3D Background WebGL Canvas */}
-      <ScrollDrivenCinematicCanvas />
+      <ScrollDrivenCinematicCanvas activeModelIndex={activeHeroModelIndex} />
       
       {/* Top Luxury Navigation */}
       <Navbar
@@ -97,6 +99,8 @@ export default function App() {
         <Hero
           onOpenConsultation={() => handleOpenConsultation()}
           onExploreStudio={handleScrollToStudio}
+          activeModelIndex={activeHeroModelIndex}
+          onSelectModel={(idx) => setActiveHeroModelIndex(idx)}
         />
 
         {/* 2. Brand Introduction ("Designed. Crafted. Customized.") */}
@@ -183,6 +187,9 @@ export default function App() {
           <span>Book Consultation</span>
         </button>
       </div>
+
+      {/* Floating Spatial Audio Atmosphere Controller (Lower Left) */}
+      <SpatialAudioControl variant="floating" />
 
       {/* Free Design Consultation & Quote Modal */}
       <ConsultationModal

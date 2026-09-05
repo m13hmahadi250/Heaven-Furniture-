@@ -14,7 +14,8 @@ import {
   ArrowRight,
   Sun,
   ShieldCheck,
-  Hammer
+  Hammer,
+  Ruler
 } from 'lucide-react';
 
 interface BespokeStudio3DProps {
@@ -94,6 +95,7 @@ export const BespokeStudio3D: React.FC<BespokeStudio3DProps> = ({ onOpenConsulta
   const [widthAdjustment, setWidthAdjustment] = useState(0);
   const [depthAdjustment, setDepthAdjustment] = useState(0);
   const [heightAdjustment, setHeightAdjustment] = useState(0);
+  const [showStudioDimensions, setShowStudioDimensions] = useState(false);
 
   const activeWood = WOOD_OPTIONS.find((w) => w.id === selectedWood) || WOOD_OPTIONS[0];
   const activeFabric = FABRIC_OPTIONS.find((f) => f.id === selectedFabric) || FABRIC_OPTIONS[0];
@@ -212,6 +214,9 @@ Please confirm timber availability and scheduling for in-home spatial measuremen
                   onToggleExploded={() => setIsExploded(!isExploded)}
                   lightingMood={lightingMood}
                   scaleDimensions={scaleDimensions}
+                  customDimensions={{ w: formattedWidth, d: formattedDepth, h: formattedHeight }}
+                  showDimensions={showStudioDimensions}
+                  onToggleDimensions={() => setShowStudioDimensions(!showStudioDimensions)}
                 />
               </div>
 
@@ -224,9 +229,23 @@ Please confirm timber availability and scheduling for in-home spatial measuremen
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4 text-[11px]">
-                  <span>
+                <div className="flex items-center gap-3 text-[11px]">
+                  <button
+                    onClick={() => setShowStudioDimensions(!showStudioDimensions)}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all ${
+                      showStudioDimensions
+                        ? 'bg-amber-500 text-black border-amber-500 shadow-md'
+                        : 'bg-white/5 border-white/10 text-amber-400 hover:border-amber-500/40 hover:text-white'
+                    }`}
+                    title="Toggle Real-World Scale & Dimensions (cm / in)"
+                  >
+                    <Ruler className="w-3 h-3" />
+                    <span>Dimensions Overlay</span>
+                  </button>
+
+                  <span className="hidden sm:inline">
                     Scaled: <strong className="text-amber-400 font-mono">{formattedWidth}" W × {formattedDepth}" D × {formattedHeight}" H</strong>
+                    <span className="text-gray-500 ml-1">({Math.round(formattedWidth * 2.54)} × {Math.round(formattedDepth * 2.54)} × {Math.round(formattedHeight * 2.54)} cm)</span>
                   </span>
                 </div>
               </div>

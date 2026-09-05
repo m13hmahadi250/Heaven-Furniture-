@@ -1,14 +1,14 @@
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface ScrollDrivenCinematicCanvasProps {
   onSectionChange?: (sectionIndex: number) => void;
+  activeModelIndex?: number;
 }
 
 // --------------------------------------------------------------------------
-// Passive Global Scroll State with Zero Layout Reading (120Hz Fast-path)
+// 1. High-Performance Zero-Allocation Global Scroll Tracker (120Hz)
 // --------------------------------------------------------------------------
 export const scrollState = {
   progress: 0,
@@ -36,352 +36,195 @@ const initScrollListener = () => {
 };
 
 // --------------------------------------------------------------------------
-// Shared High-Performance Materials Factory (Optimized PBR Shaders)
+// 2. High-Resolution Realistic Luxury Furniture & Interior Render Assets
 // --------------------------------------------------------------------------
-const usePbrMaterials = () => {
-  return useMemo(() => {
-    // 1. Seasoned Chittagong Teak with warm grain
-    const teakWood = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#4A2E1B'),
-      roughness: 0.35,
-      metalness: 0.05,
+export interface FurnitureShowcaseItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: string;
+  imageUrl: string;
+  aspectRatio: number; // width / height
+  baseScale: [number, number, number];
+  accentColor: string;
+  rimColor: string;
+}
+
+export const SHOWCASE_ITEMS: FurnitureShowcaseItem[] = [
+  {
+    id: 'emerald-bed',
+    title: 'Emerald Monarch Bed',
+    subtitle: 'Channel-Tufted Italian Velvet & Chittagong Teak',
+    category: 'Master Bedroom',
+    imageUrl: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1600&q=85',
+    aspectRatio: 1.5,
+    baseScale: [2.8, 1.9, 1],
+    accentColor: '#10B981',
+    rimColor: '#D4AF37',
+  },
+  {
+    id: 'embroidery-sofa',
+    title: 'Embroidered Sofa Suite',
+    subtitle: 'Silver-Grey Floral Brocade & Antique Silver Gilt',
+    category: 'Living Room Salon',
+    imageUrl: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1600&q=85',
+    aspectRatio: 1.5,
+    baseScale: [2.8, 1.9, 1],
+    accentColor: '#CBD5E1',
+    rimColor: '#F59E0B',
+  },
+  {
+    id: 'luxury-showcase',
+    title: 'Grand Arched Vitrine',
+    subtitle: 'Roman Glass Arch, LED Shelves & Teak Cabinetry',
+    category: 'Storage & Vitrine',
+    imageUrl: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1600&q=85',
+    aspectRatio: 1.25,
+    baseScale: [2.4, 2.4, 1],
+    accentColor: '#FBBF24',
+    rimColor: '#FFD700',
+  },
+  {
+    id: 'minimal-shoebox',
+    title: 'Noir Entryway Console',
+    subtitle: 'Matte Obsidian Hardwood & Brushed Brass Ferrules',
+    category: 'Entryway & Console',
+    imageUrl: 'https://images.unsplash.com/photo-1533090161767-e6ffed986b88?auto=format&fit=crop&w=1600&q=85',
+    aspectRatio: 1.5,
+    baseScale: [2.7, 1.8, 1],
+    accentColor: '#E2E8F0',
+    rimColor: '#E5C158',
+  },
+  {
+    id: 'royal-sapphire-sofa',
+    title: 'Royal Sapphire Damask Sofa',
+    subtitle: 'Deep Navy Velvet, 24K Gold Leaf Relief Carvings',
+    category: 'Formal Living',
+    imageUrl: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1600&q=85',
+    aspectRatio: 1.5,
+    baseScale: [2.8, 1.9, 1],
+    accentColor: '#3B82F6',
+    rimColor: '#F59E0B',
+  },
+];
+
+const SALON_BACKDROP_IMAGE =
+  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=85';
+
+// --------------------------------------------------------------------------
+// 3. Texture Loader Hook with Smooth Caching
+// --------------------------------------------------------------------------
+const useShowcaseTextures = () => {
+  const [textures, setTextures] = useState<{ [key: string]: THREE.Texture }>({});
+  const [backdropTexture, setBackdropTexture] = useState<THREE.Texture | null>(null);
+
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin('anonymous');
+
+    // Load backdrop
+    loader.load(SALON_BACKDROP_IMAGE, (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.generateMipmaps = false;
+      setBackdropTexture(tex);
     });
 
-    // 2. Deep American Walnut for library shelves & executive accents
-    const walnutWood = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#2C1D15'),
-      roughness: 0.4,
-      metalness: 0.04,
+    // Load showcase item images
+    SHOWCASE_ITEMS.forEach((item) => {
+      loader.load(item.imageUrl, (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.minFilter = THREE.LinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.generateMipmaps = false;
+        setTextures((prev) => ({ ...prev, [item.id]: tex }));
+      });
     });
-
-    // 3. Royal Emerald Velvet (Signature Chair & Upholstery)
-    const emeraldVelvet = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#14483B'),
-      roughness: 0.72,
-      metalness: 0.05,
-    });
-
-    // 4. Dark Slate-Teal Wall Material with Neoclassical Matte Finish
-    const darkTealWall = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#0E1B19'),
-      roughness: 0.88,
-      metalness: 0.02,
-    });
-
-    // 5. Neoclassical Wall Moulding Trim
-    const wallMoulding = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#0B1513'),
-      roughness: 0.8,
-      metalness: 0.04,
-    });
-
-    // 6. Blonde Oak Hardwood Floor (matching reference image floor)
-    const blondeOakFloor = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#BFA98A'),
-      roughness: 0.45,
-      metalness: 0.03,
-    });
-
-    // 7. Warm Cream Bouclé / Wool Rug
-    const creamRug = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#D8D1C3'),
-      roughness: 0.95,
-      metalness: 0.01,
-    });
-
-    // 8. PVD Champagne Brass Accents & Hardware
-    const champagneBrass = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#D4AF37'),
-      roughness: 0.22,
-      metalness: 0.88,
-    });
-
-    // 9. Smoked Architectural Glass
-    const glassMaterial = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#D0DFDE'),
-      transparent: true,
-      opacity: 0.42,
-      roughness: 0.08,
-      metalness: 0.2,
-    });
-
-    // 10. Ivory Bouclé Upholstery
-    const ivoryBoucle = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#E6E0D5'),
-      roughness: 0.88,
-      metalness: 0.01,
-    });
-
-    // 11. Polished Nero Marquina Marble
-    const honedMarble = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#141618'),
-      roughness: 0.2,
-      metalness: 0.08,
-    });
-
-    return {
-      teakWood,
-      walnutWood,
-      emeraldVelvet,
-      darkTealWall,
-      wallMoulding,
-      blondeOakFloor,
-      creamRug,
-      champagneBrass,
-      glassMaterial,
-      ivoryBoucle,
-      honedMarble,
-    };
   }, []);
+
+  return { textures, backdropTexture };
 };
 
 // --------------------------------------------------------------------------
-// Architectural Luxury Room Background Environment (Matching User Image)
+// 4. Background Neoclassical Architectural Salon Stage (Deep Parallax)
 // --------------------------------------------------------------------------
-const ArchitecturalLuxuryRoom: React.FC = () => {
-  const materials = usePbrMaterials();
+const ArchitecturalSalonBackdrop: React.FC<{
+  texture: THREE.Texture | null;
+}> = ({ texture }) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    const p = scrollState.progress;
+    const px = state.pointer.x;
+    const py = state.pointer.y;
+
+    // Gentle camera parallax response
+    meshRef.current.position.x = THREE.MathUtils.lerp(
+      meshRef.current.position.x,
+      -px * 0.25 - p * 0.4,
+      0.05
+    );
+    meshRef.current.position.y = THREE.MathUtils.lerp(
+      meshRef.current.position.y,
+      0.35 + py * 0.15 - p * 0.3,
+      0.05
+    );
+    meshRef.current.rotation.y = THREE.MathUtils.lerp(
+      meshRef.current.rotation.y,
+      px * 0.03,
+      0.05
+    );
+  });
 
   return (
-    <group position={[0, 0, 0]}>
-      {/* 1. Main Back Wall (Dark Slate Teal Neoclassical Paneled Wall) */}
-      <mesh position={[0, 1.2, -4.5]}>
-        <planeGeometry args={[26, 12]} />
-        <primitive object={materials.darkTealWall} attach="material" />
+    <group position={[0, 0.3, -5.5]}>
+      <mesh ref={meshRef}>
+        <planeGeometry args={[26, 15, 1, 1]} />
+        <meshStandardMaterial
+          map={texture || null}
+          color="#ffffff"
+          roughness={0.42}
+          metalness={0.06}
+        />
       </mesh>
 
-      {/* 2. Neoclassical Wainscot Moulding Panels on the Back Wall */}
-      {[-7.2, -4.8, -2.4, 0, 2.4, 4.8, 7.2].map((x, i) => (
-        <group key={`moulding-${i}`} position={[x, 1.3, -4.46]}>
-          {/* Upper Tall Panel Box */}
-          <mesh position={[0, 0.7, 0]}>
-            <boxGeometry args={[1.9, 2.8, 0.03]} />
-            <primitive object={materials.wallMoulding} attach="material" />
-          </mesh>
-          <mesh position={[0, 0.7, 0.012]}>
-            <boxGeometry args={[1.7, 2.6, 0.02]} />
-            <primitive object={materials.darkTealWall} attach="material" />
-          </mesh>
-          <mesh position={[0, 0.7, 0.02]}>
-            <boxGeometry args={[1.52, 2.42, 0.015]} />
-            <primitive object={materials.wallMoulding} attach="material" />
-          </mesh>
-
-          {/* Lower Wainscot Panel Box */}
-          <mesh position={[0, -1.3, 0]}>
-            <boxGeometry args={[1.9, 0.9, 0.03]} />
-            <primitive object={materials.wallMoulding} attach="material" />
-          </mesh>
-          <mesh position={[0, -1.3, 0.012]}>
-            <boxGeometry args={[1.7, 0.72, 0.02]} />
-            <primitive object={materials.darkTealWall} attach="material" />
-          </mesh>
-        </group>
-      ))}
-
-      {/* Horizontal Dado Rail & Baseboard Trim */}
-      <mesh position={[0, -0.65, -4.43]}>
-        <boxGeometry args={[26, 0.08, 0.06]} />
-        <primitive object={materials.wallMoulding} attach="material" />
-      </mesh>
-      <mesh position={[0, -1.95, -4.43]}>
-        <boxGeometry args={[26, 0.25, 0.08]} />
-        <primitive object={materials.wallMoulding} attach="material" />
-      </mesh>
-
-      {/* Architectural Fluted Pilasters (Left & Right framing columns) */}
-      {[-8.5, 8.5].map((px, idx) => (
-        <group key={`pilaster-${idx}`} position={[px, 1.2, -4.3]}>
-          <mesh>
-            <boxGeometry args={[0.9, 12, 0.16]} />
-            <primitive object={materials.wallMoulding} attach="material" />
-          </mesh>
-          {/* Fluting strips */}
-          {[-0.3, -0.15, 0, 0.15, 0.3].map((fx, k) => (
-            <mesh key={`flute-${k}`} position={[fx, 0, 0.09]}>
-              <cylinderGeometry args={[0.025, 0.025, 11.5, 6]} />
-              <primitive object={materials.darkTealWall} attach="material" />
-            </mesh>
-          ))}
-        </group>
-      ))}
-
-      {/* 3. Warm Wall Sconces with Golden Radial Glows */}
-      {[-2.4, 2.4].map((sx, idx) => (
-        <group key={`sconce-${idx}`} position={[sx, 2.5, -4.38]}>
-          <mesh rotation={[Math.PI / 2, 0, 0]}>
-            <cylinderGeometry args={[0.06, 0.06, 0.02, 12]} />
-            <primitive object={materials.champagneBrass} attach="material" />
-          </mesh>
-          <mesh position={[0, 0.12, 0.06]}>
-            <cylinderGeometry args={[0.01, 0.01, 0.25, 6]} />
-            <primitive object={materials.champagneBrass} attach="material" />
-          </mesh>
-          <mesh position={[0, 0.25, 0.08]}>
-            <sphereGeometry args={[0.055, 10, 10]} />
-            <meshStandardMaterial
-              color="#FFF1D0"
-              emissive="#FFAA33"
-              emissiveIntensity={2.5}
-              roughness={0.1}
-            />
-          </mesh>
-        </group>
-      ))}
-
-      {/* 4. Built-in Warm Teak Bookcase / Library Wall (Right Background) */}
-      <group position={[5.4, 0.6, -3.9]}>
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[3.2, 5.2, 0.65]} />
-          <primitive object={materials.walnutWood} attach="material" />
-        </mesh>
-        <mesh position={[0, 0, -0.28]}>
-          <planeGeometry args={[3.0, 5.0]} />
-          <primitive object={materials.teakWood} attach="material" />
-        </mesh>
-
-        {/* Shelves */}
-        {[-1.8, -0.9, 0, 0.9, 1.8].map((sy, idx) => (
-          <group key={`shelf-${idx}`} position={[0, sy, 0]}>
-            <mesh position={[0, 0, 0]}>
-              <boxGeometry args={[3.05, 0.06, 0.6]} />
-              <primitive object={materials.walnutWood} attach="material" />
-            </mesh>
-            <mesh position={[0, -0.035, 0.1]}>
-              <boxGeometry args={[2.9, 0.01, 0.03]} />
-              <meshBasicMaterial color="#FFB84D" />
-            </mesh>
-          </group>
-        ))}
-
-        {/* Books & Decorative Objects on Shelves */}
-        <group position={[-0.8, 0.22, 0.05]}>
-          {[-0.35, -0.25, -0.15, -0.05, 0.05, 0.15, 0.25, 0.35].map((bx, k) => (
-            <mesh key={`bk1-${k}`} position={[bx, 0, 0]}>
-              <boxGeometry args={[0.07, 0.36 + (k % 3) * 0.06, 0.32]} />
-              <meshStandardMaterial
-                color={
-                  k % 4 === 0
-                    ? '#E8DFD0'
-                    : k % 4 === 1
-                    ? '#1A332C'
-                    : k % 4 === 2
-                    ? '#633B22'
-                    : '#2D2D2D'
-                }
-                roughness={0.6}
-              />
-            </mesh>
-          ))}
-        </group>
-        <mesh position={[0.7, 0.22, 0.05]}>
-          <cylinderGeometry args={[0.12, 0.08, 0.38, 10]} />
-          <primitive object={materials.ivoryBoucle} attach="material" />
-        </mesh>
-
-        <group position={[0.3, 1.1, 0.05]}>
-          <mesh position={[-0.6, -0.08, 0]}>
-            <boxGeometry args={[0.42, 0.18, 0.3]} />
-            <meshStandardMaterial color="#E8DFD0" roughness={0.5} />
-          </mesh>
-          {[-0.1, 0.02, 0.14, 0.26, 0.38].map((bx, k) => (
-            <mesh key={`bk2-${k}`} position={[bx, 0, 0]}>
-              <boxGeometry args={[0.08, 0.38 + (k % 2) * 0.04, 0.3]} />
-              <meshStandardMaterial
-                color={k % 2 === 0 ? '#4A2E1B' : '#DFBE7B'}
-                roughness={0.5}
-              />
-            </mesh>
-          ))}
-        </group>
-        <mesh position={[-0.85, 1.12, 0.05]}>
-          <torusGeometry args={[0.14, 0.02, 6, 12]} />
-          <primitive object={materials.champagneBrass} attach="material" />
-        </mesh>
-      </group>
-
-      {/* 5. Sleek Low Brass & Glass Coffee Table (Background Middle-Right) */}
-      <group position={[2.6, -0.82, -2.9]}>
-        <mesh position={[0, 0.32, 0]}>
-          <boxGeometry args={[1.7, 0.02, 0.85]} />
-          <primitive object={materials.glassMaterial} attach="material" />
-        </mesh>
-        <mesh position={[0, 0.16, 0]}>
-          <boxGeometry args={[1.68, 0.02, 0.83]} />
-          <primitive object={materials.champagneBrass} attach="material" />
-        </mesh>
-        {[
-          [-0.8, 0.16, -0.38],
-          [0.8, 0.16, -0.38],
-          [-0.8, 0.16, 0.38],
-          [0.8, 0.16, 0.38],
-        ].map((lp, idx) => (
-          <mesh key={`tbl-leg-${idx}`} position={lp as [number, number, number]}>
-            <cylinderGeometry args={[0.012, 0.012, 0.32, 6]} />
-            <primitive object={materials.champagneBrass} attach="material" />
-          </mesh>
-        ))}
-        <mesh position={[-0.35, 0.36, 0.05]}>
-          <boxGeometry args={[0.38, 0.06, 0.28]} />
-          <meshStandardMaterial color="#FAF7F2" roughness={0.4} />
-        </mesh>
-      </group>
-
-      {/* 6. Blonde Oak Hardwood Flooring Plane */}
-      <mesh position={[0, -1.95, -1.0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[26, 16]} />
-        <primitive object={materials.blondeOakFloor} attach="material" />
-      </mesh>
-
-      {/* Floor Wood Plank Grid Lines */}
-      {[-6, -4.5, -3, -1.5, 0, 1.5, 3, 4.5, 6].map((fx, idx) => (
-        <mesh
-          key={`floor-line-${idx}`}
-          position={[fx, -1.94, -1.0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-        >
-          <planeGeometry args={[0.015, 16]} />
-          <meshBasicMaterial color="#947B5E" opacity={0.35} transparent />
-        </mesh>
-      ))}
-
-      {/* 7. Warm Ivory / Cream Textured Area Rug */}
-      <mesh position={[1.4, -1.93, -1.6]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[6.8, 4.4]} />
-        <primitive object={materials.creamRug} attach="material" />
-      </mesh>
-      <mesh position={[1.4, -1.925, -1.6]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[3.25, 3.4, 4]} />
-        <meshBasicMaterial color="#C5BCAD" opacity={0.5} transparent />
-      </mesh>
+      {/* Deep Room Architectural Lighting */}
+      <pointLight position={[-4, 3, -3.5]} intensity={1.8} color="#FFDCAD" distance={12} />
+      <pointLight position={[4, 3, -3.5]} intensity={1.5} color="#FFE6C4" distance={12} />
     </group>
   );
 };
 
 // --------------------------------------------------------------------------
-// Floating Luminous Stardust & Particle Wave Ribbon
+// 5. Ambient Golden Dust Motes & Atmospheric Floating Bokeh
 // --------------------------------------------------------------------------
-const LuminousStardustWave: React.FC = () => {
-  const groupRef = useRef<THREE.Group>(null);
+const GoldenAmbientMotes: React.FC = () => {
+  const pointsRef = useRef<THREE.Points>(null);
 
-  const particlePositions = useMemo(() => {
-    const positions = new Float32Array(30 * 3);
-    for (let i = 0; i < 30; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 14;
-      positions[i * 3 + 1] = Math.random() * 3.5 - 1.0;
-      positions[i * 3 + 2] = Math.random() * 3.5 - 3.2;
+  const [particlePositions] = useMemo(() => {
+    const count = 48;
+    const pos = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 14;
+      pos[i * 3 + 1] = Math.random() * 5.0 - 2.0;
+      pos[i * 3 + 2] = Math.random() * 4.5 - 2.5;
     }
-    return positions;
+    return [pos];
   }, []);
 
-  useFrame((_, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.015;
+  useFrame((state, delta) => {
+    if (pointsRef.current) {
+      pointsRef.current.rotation.y += delta * 0.022;
+      pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.25) * 0.03;
     }
   });
 
   return (
-    <group ref={groupRef} position={[0, 1.2, -1.8]}>
-      <points>
+    <group position={[0, 0.5, -0.8]}>
+      <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -389,10 +232,10 @@ const LuminousStardustWave: React.FC = () => {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={0.045}
-          color="#FFF8E7"
+          size={0.065}
+          color="#FFE2A8"
           transparent
-          opacity={0.7}
+          opacity={0.85}
           blending={THREE.AdditiveBlending}
         />
       </points>
@@ -401,395 +244,210 @@ const LuminousStardustWave: React.FC = () => {
 };
 
 // --------------------------------------------------------------------------
-// 1. Hero Stage Model: Sculpted Emerald Velvet Armchair (Matching User Image)
+// 6. Interactive 2.5D Depth-Mesh Hero Showcase Card (Ultra-Realistic)
+// (Curved geometry with realistic depth flex, specular response & rim lighting)
 // --------------------------------------------------------------------------
-const SculptedEmeraldArmchairModel: React.FC = () => {
-  const materials = usePbrMaterials();
+const DepthMeshHeroPlane: React.FC<{
+  item: FurnitureShowcaseItem;
+  texture: THREE.Texture | null;
+  isActive: boolean;
+  index: number;
+}> = ({ item, texture, isActive }) => {
+  const groupRef = useRef<THREE.Group>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+  const matRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const opacityRef = useRef(isActive ? 1 : 0);
 
-  return (
-    <group position={[0, 0, 0]}>
-      {/* 1. Lower Sculpted Teak Base Apron Frame */}
-      <mesh position={[0, -0.42, 0]}>
-        <boxGeometry args={[1.36, 0.08, 1.26]} />
-        <primitive object={materials.teakWood} attach="material" />
-      </mesh>
+  // High-density subdivided curved plane for optical 3D depth flexion
+  const curvedGeometry = useMemo(() => {
+    const [w, h] = [item.baseScale[0], item.baseScale[1]];
+    const geom = new THREE.PlaneGeometry(w, h, 36, 36);
+    const pos = geom.attributes.position;
 
-      {/* 2. Sculpted Organic Side Armrests & Legs */}
-      {[-0.68, 0.68].map((sideX, idx) => (
-        <group key={`chair-side-${idx}`} position={[sideX, 0, 0]}>
-          <mesh position={[0, 0.18, 0.05]} rotation={[-0.08, 0, 0]}>
-            <boxGeometry args={[0.09, 0.065, 1.24]} />
-            <primitive object={materials.teakWood} attach="material" />
-          </mesh>
-
-          <mesh position={[0, -0.48, 0.5]} rotation={[0.12, 0, idx === 0 ? -0.1 : 0.1]}>
-            <cylinderGeometry args={[0.034, 0.02, 0.72, 8]} />
-            <primitive object={materials.teakWood} attach="material" />
-          </mesh>
-
-          <mesh position={[0, -0.48, -0.52]} rotation={[-0.22, 0, idx === 0 ? -0.1 : 0.1]}>
-            <cylinderGeometry args={[0.036, 0.02, 0.74, 8]} />
-            <primitive object={materials.teakWood} attach="material" />
-          </mesh>
-
-          <mesh position={[0, -0.16, 0]} rotation={[0.42, 0, 0]}>
-            <boxGeometry args={[0.07, 0.44, 0.07]} />
-            <primitive object={materials.teakWood} attach="material" />
-          </mesh>
-
-          <mesh position={[0, -0.82, 0.54]}>
-            <cylinderGeometry args={[0.022, 0.019, 0.1, 8]} />
-            <primitive object={materials.champagneBrass} attach="material" />
-          </mesh>
-          <mesh position={[0, -0.82, -0.58]}>
-            <cylinderGeometry args={[0.022, 0.019, 0.1, 8]} />
-            <primitive object={materials.champagneBrass} attach="material" />
-          </mesh>
-        </group>
-      ))}
-
-      {/* 3. Deep Ergonomic Emerald Velvet Seat Cushion with Piping */}
-      <group position={[0, -0.22, 0.06]}>
-        <mesh position={[0, 0, 0]}>
-          <RoundedBox args={[1.28, 0.28, 1.2]} radius={0.06} smoothness={1}>
-            <primitive object={materials.emeraldVelvet} attach="material" />
-          </RoundedBox>
-        </mesh>
-        <mesh position={[0, 0.12, -0.02]}>
-          <RoundedBox args={[1.22, 0.14, 1.14]} radius={0.05} smoothness={1}>
-            <primitive object={materials.emeraldVelvet} attach="material" />
-          </RoundedBox>
-        </mesh>
-      </group>
-
-      {/* 4. High-Back Curved Cocoon Velvet Shell */}
-      <group position={[0, 0.46, -0.46]} rotation={[-0.16, 0, 0]}>
-        <mesh>
-          <RoundedBox args={[1.26, 1.08, 0.26]} radius={0.08} smoothness={1}>
-            <primitive object={materials.emeraldVelvet} attach="material" />
-          </RoundedBox>
-        </mesh>
-        <mesh position={[0, 0, -0.12]}>
-          <boxGeometry args={[1.32, 1.12, 0.05]} />
-          <primitive object={materials.teakWood} attach="material" />
-        </mesh>
-      </group>
-
-      {/* Soft Contact Shadow under the Chair */}
-      <mesh position={[0, -0.88, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[1.8, 1.8]} />
-        <meshBasicMaterial color="#050C0A" transparent opacity={0.6} />
-      </mesh>
-    </group>
-  );
-};
-
-// --------------------------------------------------------------------------
-// 2. Stage 1 Model: Handcrafted Teak Dining Suite
-// --------------------------------------------------------------------------
-const DiningTableSuiteModel: React.FC = () => {
-  const materials = usePbrMaterials();
-
-  return (
-    <group position={[0, 0, 0]}>
-      <mesh position={[0, 0.32, 0]}>
-        <RoundedBox args={[2.8, 0.09, 1.4]} radius={0.02} smoothness={1}>
-          <primitive object={materials.teakWood} attach="material" />
-        </RoundedBox>
-      </mesh>
-
-      {[-0.85, 0.85].map((x, i) => (
-        <group key={i} position={[x, -0.22, 0]}>
-          <mesh position={[0, 0, -0.32]} rotation={[0.08, 0, 0]}>
-            <boxGeometry args={[0.12, 0.85, 0.1]} />
-            <primitive object={materials.teakWood} attach="material" />
-          </mesh>
-          <mesh position={[0, 0, 0.32]} rotation={[-0.08, 0, 0]}>
-            <boxGeometry args={[0.12, 0.85, 0.1]} />
-            <primitive object={materials.teakWood} attach="material" />
-          </mesh>
-          <mesh position={[0, -0.42, 0]}>
-            <boxGeometry args={[0.16, 0.08, 1.05]} />
-            <primitive object={materials.teakWood} attach="material" />
-          </mesh>
-        </group>
-      ))}
-
-      <mesh position={[0, -0.38, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.02, 0.02, 1.7, 8]} />
-        <primitive object={materials.champagneBrass} attach="material" />
-      </mesh>
-
-      <group position={[-1.6, -0.15, 0.1]} rotation={[0, 0.45, 0]}>
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[0.65, 0.09, 0.65]} />
-          <primitive object={materials.ivoryBoucle} attach="material" />
-        </mesh>
-        <mesh position={[0, 0.42, -0.28]} rotation={[-0.1, 0, 0]}>
-          <boxGeometry args={[0.62, 0.4, 0.06]} />
-          <primitive object={materials.teakWood} attach="material" />
-        </mesh>
-      </group>
-
-      <group position={[1.6, -0.15, -0.1]} rotation={[0, -2.7, 0]}>
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[0.65, 0.09, 0.65]} />
-          <primitive object={materials.emeraldVelvet} attach="material" />
-        </mesh>
-        <mesh position={[0, 0.42, -0.28]} rotation={[-0.1, 0, 0]}>
-          <boxGeometry args={[0.62, 0.4, 0.06]} />
-          <primitive object={materials.teakWood} attach="material" />
-        </mesh>
-      </group>
-    </group>
-  );
-};
-
-// --------------------------------------------------------------------------
-// 3. Stage 2 Model: Sleek Executive Workstation Desk
-// --------------------------------------------------------------------------
-const ExecutiveDeskModel: React.FC = () => {
-  const materials = usePbrMaterials();
-
-  return (
-    <group position={[0, 0, 0]}>
-      <mesh position={[0, 0.35, 0]}>
-        <boxGeometry args={[2.6, 0.08, 1.3]} />
-        <primitive object={materials.walnutWood} attach="material" />
-      </mesh>
-
-      <group position={[-0.85, -0.05, 0]}>
-        <mesh>
-          <boxGeometry args={[0.65, 0.68, 1.15]} />
-          <primitive object={materials.walnutWood} attach="material" />
-        </mesh>
-      </group>
-
-      <group position={[0.95, -0.18, 0]}>
-        <mesh position={[0, 0, -0.5]}>
-          <boxGeometry args={[0.08, 0.96, 0.08]} />
-          <primitive object={materials.walnutWood} attach="material" />
-        </mesh>
-        <mesh position={[0, 0, 0.5]}>
-          <boxGeometry args={[0.08, 0.96, 0.08]} />
-          <primitive object={materials.walnutWood} attach="material" />
-        </mesh>
-      </group>
-
-      <group position={[0, 0.1, -0.7]} rotation={[0, 0.25, 0]}>
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[0.78, 0.1, 0.7]} />
-          <primitive object={materials.emeraldVelvet} attach="material" />
-        </mesh>
-        <mesh position={[0, 0.5, -0.32]} rotation={[-0.1, 0, 0]}>
-          <boxGeometry args={[0.74, 0.85, 0.12]} />
-          <primitive object={materials.emeraldVelvet} attach="material" />
-        </mesh>
-      </group>
-    </group>
-  );
-};
-
-// --------------------------------------------------------------------------
-// 4. Stage 3 Model: Minimalist King Bed
-// --------------------------------------------------------------------------
-const MasterBedSuiteModel: React.FC = () => {
-  const materials = usePbrMaterials();
-
-  return (
-    <group position={[0, 0, 0]}>
-      <mesh position={[0, -0.4, 0]}>
-        <boxGeometry args={[2.5, 0.22, 2.7]} />
-        <primitive object={materials.teakWood} attach="material" />
-      </mesh>
-
-      <group position={[0, 0.45, -1.3]}>
-        <mesh>
-          <boxGeometry args={[2.7, 1.45, 0.2]} />
-          <primitive object={materials.ivoryBoucle} attach="material" />
-        </mesh>
-      </group>
-
-      <mesh position={[0, -0.12, 0.05]}>
-        <boxGeometry args={[2.2, 0.36, 2.3]} />
-        <primitive object={materials.ivoryBoucle} attach="material" />
-      </mesh>
-      <mesh position={[0, 0.02, 0.45]}>
-        <boxGeometry args={[2.22, 0.16, 1.4]} />
-        <primitive object={materials.emeraldVelvet} attach="material" />
-      </mesh>
-    </group>
-  );
-};
-
-// --------------------------------------------------------------------------
-// 5. Stage 4 Model: Architectural Showcase Podium & Golden Crest
-// --------------------------------------------------------------------------
-const ShowroomPodiumModel: React.FC = () => {
-  const materials = usePbrMaterials();
-  const crestRef = useRef<THREE.Group>(null);
-
-  useFrame((_, delta) => {
-    if (crestRef.current) {
-      crestRef.current.rotation.y += delta * 0.35;
+    // Apply subtle spherical optical curvature along edges for realistic convex depth
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const y = pos.getY(i);
+      const distFromCenter = (x * x) / (w * w) + (y * y) / (h * h);
+      const zOffset = -Math.pow(distFromCenter, 1.4) * 0.22;
+      pos.setZ(i, zOffset);
     }
+    geom.computeVertexNormals();
+    return geom;
+  }, [item]);
+
+  useFrame((state, delta) => {
+    if (!groupRef.current || !meshRef.current) return;
+
+    // Smooth transition opacity
+    const targetOpacity = isActive ? 1.0 : 0.0;
+    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, delta * 5.0);
+
+    if (matRef.current) {
+      matRef.current.opacity = opacityRef.current;
+      matRef.current.transparent = true;
+    }
+
+    // Hide inactive layers completely to conserve rendering draw calls
+    groupRef.current.visible = opacityRef.current > 0.01;
+    if (!groupRef.current.visible) return;
+
+    const p = scrollState.progress;
+    const px = state.pointer.x;
+    const py = state.pointer.y;
+    const isMobile = state.size.width < 768;
+
+    // Organic floating physics
+    const time = state.clock.elapsedTime;
+    const floatY = Math.sin(time * 1.1) * 0.06;
+    const floatRotZ = Math.cos(time * 0.8) * 0.015;
+
+    // Base position & layout anchor (Right-biased on desktop for text space, centered on mobile)
+    const baseX = isMobile ? 0 : 0.95;
+    const scrollOffsetX = Math.sin(p * Math.PI * 1.6) * 0.4;
+    const scrollOffsetY = -p * 0.7 + floatY;
+    const scrollOffsetZ = -0.5 - Math.sin(p * Math.PI) * 0.4;
+
+    const targetPosX = baseX + scrollOffsetX + px * 0.22;
+    const targetPosY = -0.15 + scrollOffsetY - py * 0.14;
+    const targetPosZ = scrollOffsetZ;
+
+    groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetPosX, delta * 6.0);
+    groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetPosY, delta * 6.0);
+    groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetPosZ, delta * 6.0);
+
+    // Interactive 3D tilt & rotation reacting to cursor & scroll
+    const targetRotY = -0.12 + px * 0.28 + p * 0.35;
+    const targetRotX = 0.04 - py * 0.22;
+    const targetRotZ = floatRotZ - px * 0.04;
+
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, delta * 6.0);
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, delta * 6.0);
+    groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRotZ, delta * 6.0);
+
+    // Subtle scale breathing when active
+    const scaleFactor = (isActive ? 1.0 : 0.92) * (1 + Math.sin(time * 0.7) * 0.008);
+    groupRef.current.scale.set(scaleFactor, scaleFactor, scaleFactor);
   });
 
   return (
-    <group position={[0, 0, 0]}>
-      <mesh position={[0, -0.65, 0]}>
-        <cylinderGeometry args={[1.5, 1.55, 0.18, 16]} />
-        <primitive object={materials.honedMarble} attach="material" />
+    <group ref={groupRef} position={[0.95, -0.15, -0.5]}>
+      {/* 1. Main Realistic 2.5D Depth Curved Hero Mesh */}
+      <mesh ref={meshRef} geometry={curvedGeometry}>
+        <meshPhysicalMaterial
+          ref={matRef}
+          map={texture || null}
+          roughness={0.32}
+          metalness={0.08}
+          clearcoat={0.35}
+          clearcoatRoughness={0.25}
+          sheen={0.85}
+          sheenColor={new THREE.Color(item.accentColor)}
+          toneMapped={true}
+        />
       </mesh>
 
-      <mesh position={[0, -0.45, 0]}>
-        <cylinderGeometry args={[1.15, 1.2, 0.24, 16]} />
-        <primitive object={materials.teakWood} attach="material" />
+      {/* 2. Soft Glowing Golden Rim Halo */}
+      <mesh position={[0, 0, -0.06]}>
+        <planeGeometry args={[item.baseScale[0] * 1.04, item.baseScale[1] * 1.04]} />
+        <meshBasicMaterial
+          color={item.rimColor}
+          transparent={true}
+          opacity={0.18}
+          blending={THREE.AdditiveBlending}
+        />
       </mesh>
 
-      <group ref={crestRef} position={[0, 0.65, 0]}>
-        <mesh>
-          <torusGeometry args={[0.48, 0.022, 6, 16]} />
-          <primitive object={materials.champagneBrass} attach="material" />
-        </mesh>
-        <mesh position={[0, 0, 0]} rotation={[0.4, 0.4, 0.4]}>
-          <octahedronGeometry args={[0.24, 0]} />
-          <primitive object={materials.champagneBrass} attach="material" />
-        </mesh>
-      </group>
+      {/* 3. Ground Ambient Shadow Simulation */}
+      <mesh position={[0, -item.baseScale[1] * 0.52, -0.2]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[item.baseScale[0] * 1.1, 1.6]} />
+        <meshBasicMaterial
+          color="#010403"
+          transparent={true}
+          opacity={0.65}
+        />
+      </mesh>
+
+      {/* 4. Individual Intimate Golden Accent Light Tracking the Selected Furniture */}
+      <pointLight
+        position={[0.8, 0.6, 1.2]}
+        intensity={0.9}
+        color={item.rimColor}
+        distance={4.2}
+      />
     </group>
   );
 };
 
 // --------------------------------------------------------------------------
-// Multi-Stage Orchestrator (120Hz Ultra-Smooth Interpolation & Zero CPU Garbage)
+// 7. Parallax Showroom Stage Orchestrator
 // --------------------------------------------------------------------------
-interface StageRigProps {
-  onSectionChange?: (sectionIndex: number) => void;
-}
-
-const MultiStageOrchestrator: React.FC<StageRigProps> = ({ onSectionChange }) => {
-  const stage0Ref = useRef<THREE.Group>(null);
-  const stage1Ref = useRef<THREE.Group>(null);
-  const stage2Ref = useRef<THREE.Group>(null);
-  const stage3Ref = useRef<THREE.Group>(null);
-  const stage4Ref = useRef<THREE.Group>(null);
-
+const CinematicStageOrchestrator: React.FC<ScrollDrivenCinematicCanvasProps> = ({
+  onSectionChange,
+  activeModelIndex = 0,
+}) => {
+  const { textures, backdropTexture } = useShowcaseTextures();
   const activeSectionRef = useRef(-1);
+  const mouseLightRef = useRef<THREE.PointLight>(null);
 
   useFrame((state, delta) => {
-    // Ultra-smooth 120Hz Lerp without DOM layout querying
-    const lerpSpeed = Math.min(delta * 8.0, 1.0);
+    // 120Hz smooth scroll interpolation
+    const lerpFactor = Math.min(delta * 7.5, 1.0);
     scrollState.progress = THREE.MathUtils.lerp(
       scrollState.progress,
       scrollState.targetProgress,
-      lerpSpeed
+      lerpFactor
     );
     const p = scrollState.progress;
 
-    const currentSection = Math.min(Math.floor(p * 5), 4);
-    if (activeSectionRef.current !== currentSection) {
-      activeSectionRef.current = currentSection;
-      if (onSectionChange) onSectionChange(currentSection);
+    const sectionIndex = Math.min(Math.floor(p * 6), 5);
+    if (activeSectionRef.current !== sectionIndex) {
+      activeSectionRef.current = sectionIndex;
+      if (onSectionChange) onSectionChange(sectionIndex);
     }
 
-    const pointerX = state.pointer.x;
-    const pointerY = state.pointer.y;
-    const isMobile = state.size.width < 768;
-    const baseX = isMobile ? 0 : 0.85;
-    const floatOffset = Math.sin(state.clock.elapsedTime * 0.9) * 0.03;
-
-    const updateStage = (
-      stageIndex: number,
-      stageRef: React.RefObject<THREE.Group | null>
-    ) => {
-      if (!stageRef.current) return;
-
-      const stageCenter = stageIndex * 0.25;
-      const dist = Math.abs(p - stageCenter);
-      const isVisible = dist < 0.28;
-
-      if (!isVisible) {
-        if (stageRef.current.visible) stageRef.current.visible = false;
-        return;
-      }
-
-      if (!stageRef.current.visible) stageRef.current.visible = true;
-
-      const weight = Math.max(0, 1.0 - dist / 0.24);
-      const smoothWeight = THREE.MathUtils.smoothstep(weight, 0, 1);
-
-      const isExiting = p > stageCenter;
-      const direction = isExiting ? -1 : 1;
-      const glideOffset = (1 - smoothWeight) * 2.8 * direction;
-
-      const baseZ = stageIndex === 0 ? -0.8 : -1.8;
-      const targetScale = THREE.MathUtils.lerp(0.65, stageIndex === 0 ? 1.25 : 0.95, smoothWeight);
-
-      stageRef.current.position.x = THREE.MathUtils.lerp(
-        stageRef.current.position.x,
-        baseX + glideOffset + pointerX * 0.08,
-        lerpSpeed
+    // Dynamic mouse spotlight tracking
+    if (mouseLightRef.current) {
+      mouseLightRef.current.position.x = THREE.MathUtils.lerp(
+        mouseLightRef.current.position.x,
+        state.pointer.x * 2.8 + 1.0,
+        0.08
       );
-      stageRef.current.position.y = THREE.MathUtils.lerp(
-        stageRef.current.position.y,
-        (stageIndex === 0 ? -0.75 : -0.1) + floatOffset + (1 - smoothWeight) * -0.4 - pointerY * 0.04,
-        lerpSpeed
+      mouseLightRef.current.position.y = THREE.MathUtils.lerp(
+        mouseLightRef.current.position.y,
+        state.pointer.y * 2.0 + 0.8,
+        0.08
       );
-      stageRef.current.position.z = THREE.MathUtils.lerp(
-        stageRef.current.position.z,
-        baseZ,
-        lerpSpeed
-      );
-
-      const curScale = stageRef.current.scale.x || 0.01;
-      const nextScale = THREE.MathUtils.lerp(curScale, targetScale, lerpSpeed);
-      stageRef.current.scale.set(nextScale, nextScale, nextScale);
-
-      const baseRotY = (p - stageCenter) * 1.1 + (stageIndex === 0 ? -0.22 : stageIndex % 2 === 0 ? -0.35 : 0.35);
-      stageRef.current.rotation.y = THREE.MathUtils.lerp(
-        stageRef.current.rotation.y,
-        baseRotY + pointerX * 0.12,
-        lerpSpeed
-      );
-      stageRef.current.rotation.x = THREE.MathUtils.lerp(
-        stageRef.current.rotation.x,
-        0.03 - pointerY * 0.05,
-        lerpSpeed
-      );
-    };
-
-    updateStage(0, stage0Ref);
-    updateStage(1, stage1Ref);
-    updateStage(2, stage2Ref);
-    updateStage(3, stage3Ref);
-    updateStage(4, stage4Ref);
+    }
   });
 
   return (
     <group>
-      <ArchitecturalLuxuryRoom />
-      <LuminousStardustWave />
+      {/* 1. Deep Parallax Neoclassical Salon Interior Backdrop */}
+      <ArchitecturalSalonBackdrop texture={backdropTexture} />
 
-      <group ref={stage0Ref} position={[0.85, -0.75, -0.8]}>
-        <SculptedEmeraldArmchairModel />
-      </group>
+      {/* 2. Ambient Floating Golden Bokeh Dust */}
+      <GoldenAmbientMotes />
 
-      <group ref={stage1Ref} position={[0.85, -0.1, -1.8]}>
-        <DiningTableSuiteModel />
-      </group>
+      {/* 3. Ultra-Realistic Interactive 2.5D Depth-Mesh Furniture Showcase */}
+      {SHOWCASE_ITEMS.map((item, idx) => (
+        <DepthMeshHeroPlane
+          key={item.id}
+          item={item}
+          texture={textures[item.id] || null}
+          isActive={activeModelIndex === idx}
+          index={idx}
+        />
+      ))}
 
-      <group ref={stage2Ref} position={[0.85, -0.1, -1.8]}>
-        <ExecutiveDeskModel />
-      </group>
-
-      <group ref={stage3Ref} position={[0.85, -0.1, -1.8]}>
-        <MasterBedSuiteModel />
-      </group>
-
-      <group ref={stage4Ref} position={[0.85, -0.1, -1.8]}>
-        <ShowroomPodiumModel />
-      </group>
+      {/* 4. Cursor Interactive Dynamic Spotlight */}
+      <pointLight
+        ref={mouseLightRef}
+        position={[1.5, 1.2, 2.2]}
+        intensity={1.2}
+        color="#FFE9C2"
+        distance={6.5}
+      />
     </group>
   );
 };
@@ -809,12 +467,13 @@ const isWebGLSupported = (): boolean => {
 };
 
 // --------------------------------------------------------------------------
-// Main Exported Component: Editorial Architectural 3D Background Canvas
+// 8. Main Exported Component: Ultra-Realistic 2.5D Parallax & Depth Canvas
 // --------------------------------------------------------------------------
 export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasProps> = ({
   onSectionChange,
+  activeModelIndex = 0,
 }) => {
-  const [hasWebGL, setHasWebGL] = React.useState(true);
+  const [hasWebGL, setHasWebGL] = useState(true);
 
   useEffect(() => {
     initScrollListener();
@@ -826,7 +485,7 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
       className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden"
       style={{
         background:
-          'radial-gradient(ellipse at 65% 35%, #132724 0%, #0A1715 45%, #050E0C 100%)',
+          'radial-gradient(ellipse at 72% 35%, #22342E 0%, #14221E 35%, #0B1311 70%, #050807 100%)',
         contain: 'strict',
         willChange: 'transform',
         transform: 'translate3d(0,0,0)',
@@ -834,8 +493,8 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
     >
       {hasWebGL && (
         <Canvas
-          dpr={[1, typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 1.25) : 1]}
-          camera={{ position: [0, 0.15, 4.4], fov: 38 }}
+          dpr={[1, typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 1.5) : 1]}
+          camera={{ position: [0, 0.1, 4.2], fov: 38 }}
           gl={{
             antialias: true,
             alpha: true,
@@ -843,40 +502,53 @@ export const ScrollDrivenCinematicCanvas: React.FC<ScrollDrivenCinematicCanvasPr
             stencil: false,
             depth: true,
             toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.15,
+            toneMappingExposure: 1.25,
           }}
           className="w-full h-full"
         >
-          <ambientLight intensity={0.7} color="#FFF5EB" />
+          {/* Atmospheric Depth Mist - Soft distant falloff */}
+          <fog attach="fog" args={['#081411', 14.0, 36.0]} />
 
+          {/* Three-Point Luxury Studio Illumination */}
+          {/* 1. Warm Golden Key Light */}
           <directionalLight
-            position={[4.5, 7.5, 3.5]}
-            intensity={1.3}
-            color="#FFF7EE"
+            position={[-4.5, 6.0, 3.5]}
+            intensity={2.4}
+            color="#FFF7EC"
           />
 
+          {/* 2. Soft Ambient Salon Fill */}
+          <ambientLight intensity={1.1} color="#FFFBF5" />
+
+          {/* 3. Cool Accent Sky/Window Fill */}
           <directionalLight
-            position={[-5, 3, 2]}
-            intensity={0.35}
-            color="#8CB9B0"
+            position={[4.0, 4.0, 2.5]}
+            intensity={0.8}
+            color="#A8C8E5"
           />
 
+          {/* 4. Golden Rim Backlight */}
           <directionalLight
             position={[0, 4.5, -3.5]}
-            intensity={0.75}
-            color="#F59E0B"
+            intensity={1.2}
+            color="#FFC56E"
           />
-          <pointLight position={[0.85, -0.4, -0.8]} intensity={0.35} color="#E8BE78" />
 
-          <MultiStageOrchestrator onSectionChange={onSectionChange} />
+          <CinematicStageOrchestrator
+            onSectionChange={onSectionChange}
+            activeModelIndex={activeModelIndex}
+          />
         </Canvas>
       )}
 
-      {/* Layer 1: Left-to-Right Subtle Atmospheric Vignette for Flawless Text Readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#050E0C]/90 via-[#050E0C]/45 to-transparent pointer-events-none" />
+      {/* Layer 1: Left-to-Right Editorial Vignette ensuring crisp text legibility while revealing background salon */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#030807]/85 via-[#030807]/35 to-transparent pointer-events-none" />
 
       {/* Layer 2: Top-and-Bottom Architectural Soft Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050E0C]/75 via-transparent to-[#050E0C]/90 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#030807]/60 via-transparent to-[#030807]/80 pointer-events-none" />
+
+      {/* Layer 3: Warm Golden Studio Rim Glow Accent on Right Edge */}
+      <div className="absolute top-1/4 right-0 w-[550px] h-[550px] bg-amber-500/15 rounded-full blur-[140px] pointer-events-none" />
     </div>
   );
 };

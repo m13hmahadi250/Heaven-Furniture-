@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BRAND_INFO } from '../data/furnitureData';
 import { Phone, MessageCircle, Sparkles, MapPin, Menu, X, Clock } from 'lucide-react';
+import { SpatialAudioControl } from './SpatialAudioControl';
 
 interface NavbarProps {
   onOpenConsultation: () => void;
@@ -87,52 +88,61 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigateTo
             </div>
           </a>
 
-          {/* Desktop Nav Links in Bold Minimalist Tracking */}
-          <div className="hidden lg:flex items-center gap-8 text-xs uppercase tracking-widest font-medium">
+          {/* Desktop Nav Links in Professional Architectural Typography */}
+          <div className="hidden lg:flex items-center gap-7 text-[13.5px] font-medium tracking-[0.02em] text-zinc-300">
             <button
               onClick={() => {
                 onNavigateToStudio();
                 scrollToSection('bespoke-3d-studio');
               }}
-              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors font-bold"
+              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-semibold transition-colors py-1 relative group"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              3D Custom
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>3D Custom Studio</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('collections')}
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
             >
-              Collections
+              <span>Collections</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('bespoke-highlight')}
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
             >
-              Bespoke
+              <span>Bespoke Service</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('why-heaven')}
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
             >
-              Why Heaven
+              <span>Why Heaven</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('showroom-experience')}
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
             >
-              Showroom
+              <span>Agrabad Showroom</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('milestones-timeline')}
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
             >
-              Story
+              <span>Heritage & Story</span>
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
           </div>
 
-          {/* CTA Actions - Bold Pill Buttons */}
+          {/* CTA Actions - Bold Pill Buttons & Audio Toggle */}
           <div className="hidden sm:flex items-center gap-3">
+            {/* Spatial Audio Toggle & Ambient Controller */}
+            <SpatialAudioControl variant="navbar" />
+
             <a
               href={BRAND_INFO.whatsappUrl}
               target="_blank"
@@ -209,6 +219,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigateTo
             </div>
 
             <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+              <div className="flex items-center justify-between py-2 px-4 rounded-2xl bg-white/5 border border-white/10">
+                <span className="text-xs font-semibold text-zinc-300">Spatial Showroom Audio</span>
+                <SpatialAudioControl variant="navbar" />
+              </div>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
