@@ -79,7 +79,7 @@ export const WhyChooseHeaven: React.FC<WhyChooseHeavenProps> = ({ onOpenConsulta
           
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.95] text-white font-heading-bold">
             Why Discerning Homeowners <br />
-            <span className="text-transparent text-stroke-white">Choose Heaven</span> <br />
+            <span className="text-wood-texture">Choose Heaven</span> <br />
             <span className="text-amber-500">Furniture Mart.</span>
           </h2>
           

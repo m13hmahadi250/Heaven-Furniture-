@@ -166,7 +166,7 @@ Please confirm timber availability and scheduling for in-home spatial measuremen
             </div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.92] text-white font-heading-bold">
               Design & Configure <br />
-              <span className="text-transparent text-stroke-white">Your Bespoke</span> <br />
+              <span className="text-wood-texture">Your Bespoke</span> <br />
               <span className="text-amber-500">Masterpiece.</span>
             </h2>
             <p className="text-gray-300 text-sm sm:text-base font-light">

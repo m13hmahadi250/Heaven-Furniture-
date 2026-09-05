@@ -106,7 +106,7 @@ export const AiConsultantSection: React.FC<AiConsultantSectionProps> = ({ onOpen
           
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.95] text-white font-heading-bold">
             Generate an Instant <br />
-            <span className="text-transparent text-stroke-white">Bespoke Room</span> <br />
+            <span className="text-wood-texture">Bespoke Room</span> <br />
             <span className="text-amber-500">Blueprint & Quote.</span>
           </h2>
           

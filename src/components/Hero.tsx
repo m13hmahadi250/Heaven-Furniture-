@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BRAND_INFO } from '../data/furnitureData';
 import {
   ArrowRight,
@@ -8,11 +8,18 @@ import {
   Bed,
   Armchair,
   Layers,
-  Box,
-  Crown
+  Crown,
+  Utensils,
+  Briefcase,
+  RotateCw,
+  Ruler,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { CraftedAnimatedText } from './CraftedAnimatedText';
+import { FurnitureViewer3D, LightingMood } from './ThreeCanvas/FurnitureViewer3D';
+import { WoodType, FabricType } from '../types';
 
 interface HeroProps {
   onOpenConsultation: () => void;
@@ -21,37 +28,80 @@ interface HeroProps {
   onSelectModel?: (index: number) => void;
 }
 
-const HEAVEN_SIGNATURE_MODELS = [
+interface HeroModelOption {
+  id: 'sofa' | 'bed' | 'dining-table' | 'armchair' | 'executive-desk';
+  title: string;
+  category: string;
+  price: string;
+  dimensions: string;
+  defaultWood: WoodType;
+  defaultFabric: FabricType;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const HERO_SIGNATURE_PIECES: HeroModelOption[] = [
   {
-    id: 'emerald-bed',
-    title: 'Minimalist Bed Set',
-    sub: 'Emerald Velvet & Walnut',
+    id: 'sofa',
+    title: 'Royal Sapphire Sofa',
+    category: 'Living Suite',
+    price: '৳ 2,35,000',
+    dimensions: '88"W × 38"D × 42"H',
+    defaultWood: 'chittagong-teak',
+    defaultFabric: 'emerald-velvet',
+    icon: Crown,
+  },
+  {
+    id: 'bed',
+    title: 'Aurora Emerald Bed',
+    category: 'Master Bedroom',
+    price: '৳ 1,85,000',
+    dimensions: '78"W × 84"D × 56"H',
+    defaultWood: 'solid-walnut',
+    defaultFabric: 'emerald-velvet',
     icon: Bed,
   },
   {
-    id: 'embroidery-sofa',
-    title: 'Embroidered Sofa Set',
-    sub: 'Silver-Grey Floral Rococo',
+    id: 'dining-table',
+    title: 'Imperial Dining Suite',
+    category: 'Dining Room',
+    price: '৳ 2,45,000',
+    dimensions: '96"W × 44"D × 30"H',
+    defaultWood: 'chittagong-teak',
+    defaultFabric: 'ivory-boucle',
+    icon: Utensils,
+  },
+  {
+    id: 'armchair',
+    title: 'Heritage Teak Armchair',
+    category: 'Artisan Lounge',
+    price: '৳ 48,000',
+    dimensions: '38"W × 36"D × 36"H',
+    defaultWood: 'burma-teak',
+    defaultFabric: 'cognac-leather',
     icon: Armchair,
   },
   {
-    id: 'luxury-showcase',
-    title: 'Luxury Showcase',
-    sub: 'Grand Arched Vitrine',
-    icon: Layers,
+    id: 'executive-desk',
+    title: 'Diplomatic Desk',
+    category: 'Executive Office',
+    price: '৳ 1,65,000',
+    dimensions: '76"W × 38"D × 31"H',
+    defaultWood: 'solid-walnut',
+    defaultFabric: 'cognac-leather',
+    icon: Briefcase,
   },
-  {
-    id: 'minimal-shoebox',
-    title: 'Minimal Shoe Box',
-    sub: 'Matte Black & Gold Console',
-    icon: Box,
-  },
-  {
-    id: 'royal-sapphire-sofa',
-    title: 'Royal Sapphire Sofa',
-    sub: '24K Gold Damask Suite',
-    icon: Crown,
-  },
+];
+
+const WOOD_SWATCHES: { id: WoodType; name: string; hex: string }[] = [
+  { id: 'chittagong-teak', name: 'Segun Teak', hex: '#8C572A' },
+  { id: 'burma-teak', name: 'Burma Teak', hex: '#683F1C' },
+  { id: 'solid-walnut', name: 'Smoked Walnut', hex: '#3D2A20' },
+];
+
+const FABRIC_SWATCHES: { id: FabricType; name: string; hex: string }[] = [
+  { id: 'emerald-velvet', name: 'Emerald Velvet', hex: '#1B4332' },
+  { id: 'ivory-boucle', name: 'Ivory Bouclé', hex: '#EFE9DD' },
+  { id: 'cognac-leather', name: 'Cognac Leather', hex: '#8B4513' },
 ];
 
 const containerVariants = {
@@ -83,6 +133,37 @@ export const Hero: React.FC<HeroProps> = ({
   activeModelIndex = 0,
   onSelectModel,
 }) => {
+  const [selectedPieceIndex, setSelectedPieceIndex] = useState(activeModelIndex);
+  const currentPiece = HERO_SIGNATURE_PIECES[selectedPieceIndex] || HERO_SIGNATURE_PIECES[0];
+
+  const [selectedWood, setSelectedWood] = useState<WoodType>(currentPiece.defaultWood);
+  const [selectedFabric, setSelectedFabric] = useState<FabricType>(currentPiece.defaultFabric);
+  const [isExploded, setIsExploded] = useState(false);
+  const [showDimensions, setShowDimensions] = useState(false);
+  const [lightingMood, setLightingMood] = useState<LightingMood>('warm-studio');
+
+  // Sync when activeModelIndex prop updates
+  useEffect(() => {
+    if (typeof activeModelIndex === 'number' && activeModelIndex >= 0 && activeModelIndex < HERO_SIGNATURE_PIECES.length) {
+      setSelectedPieceIndex(activeModelIndex);
+      setSelectedWood(HERO_SIGNATURE_PIECES[activeModelIndex].defaultWood);
+      setSelectedFabric(HERO_SIGNATURE_PIECES[activeModelIndex].defaultFabric);
+    }
+  }, [activeModelIndex]);
+
+  const handleSelectPiece = (idx: number) => {
+    setSelectedPieceIndex(idx);
+    const piece = HERO_SIGNATURE_PIECES[idx];
+    setSelectedWood(piece.defaultWood);
+    setSelectedFabric(piece.defaultFabric);
+    if (onSelectModel) {
+      onSelectModel(idx);
+    }
+  };
+
+  const toggleLighting = () => {
+    setLightingMood((prev) => (prev === 'warm-studio' ? 'daylight' : prev === 'daylight' ? 'dark-luxury' : 'warm-studio'));
+  };
   return (
     <section
       id="section-hero"
@@ -198,79 +279,218 @@ export const Hero: React.FC<HeroProps> = ({
 
               </div>
 
-              {/* Right Column: Interactive 3D Model Explorer, Pillars & Guarantees */}
-              <div className="lg:col-span-5 xl:col-span-5 space-y-6 bg-white/[0.03] border border-white/10 p-6 sm:p-8 rounded-2xl backdrop-blur-sm">
-                
-                {/* Signature 5-Piece Interactive Model Selector */}
-                <motion.div variants={itemVariants} className="space-y-2.5">
-                  <div className="flex items-center justify-between text-xs text-gray-400">
-                    <span className="uppercase tracking-wider font-semibold text-amber-400/90 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                      Signature 3D Pieces:
+              {/* Right Column: Fully Interactive Working 3D Showcase & Bespoke Configurator Preview */}
+              <motion.div
+                variants={itemVariants}
+                className="lg:col-span-5 xl:col-span-5 space-y-4 bg-[#0D0D0D]/90 border border-white/15 p-4 sm:p-6 rounded-3xl backdrop-blur-xl shadow-2xl relative overflow-hidden"
+              >
+                {/* 1. Header with Live Status & Piece Info */}
+                <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+                        Live 3D WebGL Studio
+                      </span>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                      {currentPiece.title}
+                    </h3>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-amber-400 block tracking-tight">
+                      {currentPiece.price}
                     </span>
-                    <span className="text-[11px] text-gray-400 font-light">
-                      Click to inspect
+                    <span className="text-[10px] text-zinc-400 block font-light">
+                      {currentPiece.dimensions}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {HEAVEN_SIGNATURE_MODELS.map((model, idx) => {
-                      const Icon = model.icon;
-                      const isActive = activeModelIndex === idx;
+                </div>
+
+                {/* 2. Interactive 3D WebGL Stage */}
+                <div className="h-[280px] sm:h-[320px] rounded-2xl overflow-hidden shadow-inner bg-[#070707] border border-white/10 relative group">
+                  <FurnitureViewer3D
+                    modelType={currentPiece.id}
+                    selectedWood={selectedWood}
+                    selectedFabric={selectedFabric}
+                    exploded={isExploded}
+                    onToggleExploded={() => setIsExploded(!isExploded)}
+                    lightingMood={lightingMood}
+                    showDimensions={showDimensions}
+                    onToggleDimensions={() => setShowDimensions(!showDimensions)}
+                    interactive={true}
+                  />
+
+                  {/* Top Left Floating Instruction Badge */}
+                  <div className="absolute top-3 left-3 pointer-events-none bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1.5 text-[10px] text-zinc-300">
+                    <RotateCw className="w-3 h-3 text-amber-400 animate-spin" style={{ animationDuration: '6s' }} />
+                    <span>360° Drag to inspect</span>
+                  </div>
+
+                  {/* Top Right Floating Stage Controls */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10">
+                    <button
+                      onClick={() => setIsExploded(!isExploded)}
+                      title="Explode Joinery View"
+                      className={`p-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 backdrop-blur-md transition-all border ${
+                        isExploded
+                          ? 'bg-amber-500 text-black border-amber-400 shadow-md'
+                          : 'bg-black/70 text-zinc-300 border-white/15 hover:text-white hover:border-amber-400/50'
+                      }`}
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline text-[9px] uppercase tracking-wider">Joinery</span>
+                    </button>
+
+                    <button
+                      onClick={() => setShowDimensions(!showDimensions)}
+                      title="Toggle Dimension HUD"
+                      className={`p-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 backdrop-blur-md transition-all border ${
+                        showDimensions
+                          ? 'bg-amber-500 text-black border-amber-400 shadow-md'
+                          : 'bg-black/70 text-zinc-300 border-white/15 hover:text-white hover:border-amber-400/50'
+                      }`}
+                    >
+                      <Ruler className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline text-[9px] uppercase tracking-wider">Dimensions</span>
+                    </button>
+
+                    <button
+                      onClick={toggleLighting}
+                      title="Cycle Lighting Mood"
+                      className="p-1.5 rounded-lg text-[10px] font-bold bg-black/70 text-zinc-300 border border-white/15 hover:text-amber-400 hover:border-amber-400/50 backdrop-blur-md transition-all"
+                    >
+                      {lightingMood === 'warm-studio' ? (
+                        <Sun className="w-3.5 h-3.5 text-amber-400" />
+                      ) : lightingMood === 'daylight' ? (
+                        <Sun className="w-3.5 h-3.5 text-sky-300" />
+                      ) : (
+                        <Moon className="w-3.5 h-3.5 text-indigo-300" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 3. Five Signature Model Switcher Ribbon */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                    <span className="font-semibold uppercase tracking-wider text-amber-400 flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" /> Select 3D Piece:
+                    </span>
+                    <span className="text-[10px] text-zinc-400">
+                      {selectedPieceIndex + 1} of {HERO_SIGNATURE_PIECES.length}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {HERO_SIGNATURE_PIECES.map((piece, idx) => {
+                      const Icon = piece.icon;
+                      const isActive = selectedPieceIndex === idx;
                       return (
                         <button
-                          key={model.id}
-                          onClick={() => onSelectModel && onSelectModel(idx)}
-                          className={`px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all border ${
+                          key={piece.id}
+                          onClick={() => handleSelectPiece(idx)}
+                          className={`py-2 px-1 rounded-xl text-center flex flex-col items-center justify-center gap-1 transition-all border ${
                             isActive
-                              ? 'bg-amber-500 text-black border-amber-400 font-bold shadow-lg shadow-amber-500/25 scale-[1.03]'
-                              : 'bg-black/60 text-gray-300 border-white/15 hover:border-amber-500/50 hover:bg-white/5 hover:text-white'
+                              ? 'bg-amber-500 text-black border-amber-400 font-bold shadow-lg shadow-amber-500/20 scale-[1.02]'
+                              : 'bg-black/50 text-zinc-300 border-white/10 hover:border-amber-400/50 hover:bg-white/5 hover:text-white'
                           }`}
                         >
-                          <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-black' : 'text-amber-400'}`} />
-                          <span>{model.title}</span>
+                          <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-amber-400'}`} />
+                          <span className="text-[10px] font-medium leading-tight truncate max-w-full">
+                            {piece.title.split(' ')[0]}
+                          </span>
                         </button>
                       );
                     })}
                   </div>
-                </motion.div>
+                </div>
 
-                {/* The "Designed. Crafted. Customized." Pillars */}
-                <motion.div variants={itemVariants} className="grid grid-cols-3 gap-3 pt-3 border-t border-white/10">
+                {/* 4. Live Material Swatches (Working Timber & Fabric Controls) */}
+                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10 text-[11px]">
+                  {/* Timber Swatches */}
                   <div className="space-y-1">
-                    <span className="text-[11px] font-bold text-amber-500 uppercase tracking-widest block">01 / Designed</span>
-                    <p className="text-xs text-gray-400 font-light">To your floorplan</p>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 block">
+                      Timber Finish:
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      {WOOD_SWATCHES.map((w) => (
+                        <button
+                          key={w.id}
+                          onClick={() => setSelectedWood(w.id)}
+                          title={w.name}
+                          className={`w-7 h-7 rounded-full border-2 transition-transform ${
+                            selectedWood === w.id
+                              ? 'border-amber-400 scale-110 shadow-md ring-2 ring-amber-400/30'
+                              : 'border-white/20 hover:scale-105 opacity-80 hover:opacity-100'
+                          }`}
+                          style={{ backgroundColor: w.hex }}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div className="space-y-1 border-l border-white/10 pl-3">
-                    <span className="text-[11px] font-bold text-amber-500 uppercase tracking-widest block">02 / Crafted</span>
-                    <p className="text-xs text-gray-400 font-light">Chittagong Teak</p>
-                  </div>
-                  <div className="space-y-1 border-l border-white/10 pl-3">
-                    <span className="text-[11px] font-bold text-amber-500 uppercase tracking-widest block">03 / Custom</span>
-                    <p className="text-xs text-gray-400 font-light">100% bespoke</p>
-                  </div>
-                </motion.div>
 
-                {/* Trust Points Mini Grid */}
-                <motion.div variants={itemVariants} className="grid grid-cols-2 gap-2.5 pt-3 text-xs text-gray-400 border-t border-white/10">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                    <span>In-Home Laser Mapping</span>
+                  {/* Fabric Swatches */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 block">
+                      Upholstery:
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      {FABRIC_SWATCHES.map((f) => (
+                        <button
+                          key={f.id}
+                          onClick={() => setSelectedFabric(f.id)}
+                          title={f.name}
+                          className={`w-7 h-7 rounded-full border-2 transition-transform ${
+                            selectedFabric === f.id
+                              ? 'border-amber-400 scale-110 shadow-md ring-2 ring-amber-400/30'
+                              : 'border-white/20 hover:scale-105 opacity-80 hover:opacity-100'
+                          }`}
+                          style={{ backgroundColor: f.hex }}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                    <span>White-Glove BD Delivery</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                    <span>Agrabad Studio Experience</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                    <span>10-Yr Timber Guarantee</span>
-                  </div>
-                </motion.div>
+                </div>
 
-              </div>
+                {/* 5. Direct Action Buttons & Guarantees */}
+                <div className="pt-2 border-t border-white/10 flex items-center gap-2.5">
+                  <button
+                    onClick={onExploreStudio}
+                    className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/30"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-black" />
+                    <span>Customize in 3D Studio</span>
+                  </button>
+
+                  <button
+                    onClick={onOpenConsultation}
+                    className="py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-amber-400/50 text-white font-semibold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <span>Quote</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* 6. Authentic Pillars */}
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/10 text-[10px] text-zinc-400">
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3 h-3 text-amber-500 flex-shrink-0" />
+                    <span>Seasoned Teak</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3 h-3 text-amber-500 flex-shrink-0" />
+                    <span>10-Yr Warranty</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3 h-3 text-amber-500 flex-shrink-0" />
+                    <span>Laser Measuring</span>
+                  </div>
+                </div>
+              </motion.div>
 
             </div>
 

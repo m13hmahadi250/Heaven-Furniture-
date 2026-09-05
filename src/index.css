@@ -91,6 +91,23 @@
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
 }
 
+/* Authentic Handcrafted Solid Dark Wood Grain Texture Typography */
+.text-wood-texture {
+  display: inline-block;
+  color: #A35C2B;
+  background-color: #5C3217;
+  background-image:
+    linear-gradient(180deg, rgba(130, 72, 34, 0.25) 0%, rgba(60, 30, 14, 0.5) 100%),
+    url('https://images.unsplash.com/photo-1546484396-fb3fc6f95f98?auto=format&fit=crop&w=1200&q=80');
+  background-blend-mode: multiply, normal;
+  background-size: cover;
+  background-position: center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.42)) drop-shadow(0 1px 4px rgba(255, 255, 255, 0.3)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.85));
+}
+
 /* Subtle glow & shadow utilities */
 .amber-glow {
   box-shadow: 0 0 40px -10px rgba(245, 158, 11, 0.25);

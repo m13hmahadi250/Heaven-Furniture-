@@ -321,29 +321,6 @@ export function CraftedAnimatedText() {
           }
         }
 
-        @keyframes joineryPinLock {
-          0%, 10% {
-            transform: scale(0);
-            opacity: 0;
-          }
-          14% {
-            transform: scale(1.7);
-            opacity: 1;
-          }
-          20% {
-            transform: scale(1);
-            opacity: 0.9;
-          }
-          84% {
-            transform: scale(1);
-            opacity: 0.9;
-          }
-          92%, 100% {
-            transform: scale(0);
-            opacity: 0;
-          }
-        }
-
         .joinery-segment {
           animation: joinerySegmentFly 5.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
           animation-delay: var(--delay);
@@ -351,14 +328,6 @@ export function CraftedAnimatedText() {
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
           transform: translateZ(0);
-        }
-
-        .joinery-pin {
-          animation: joineryPinLock 5.8s ease-out infinite;
-          animation-delay: var(--delay);
-          will-change: transform, opacity;
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
         }
       `}</style>
 
@@ -392,21 +361,6 @@ export function CraftedAnimatedText() {
                 }
               >
                 {letterItem.char}
-
-                {/* Furniture Dowel Pin / Peg ("প্যারাগ") that locks the joint */}
-                {segment.pinPos && (
-                  <span
-                    style={
-                      {
-                        ...segment.pinPos,
-                        '--delay': `${segment.delay + 0.32}s`,
-                      } as React.CSSProperties
-                    }
-                    className="joinery-pin absolute w-2.5 h-2.5 -ml-1.25 -mt-1.25 rounded-full bg-amber-400 border border-white shadow-[0_0_8px_#f59e0b] pointer-events-none z-20 flex items-center justify-center"
-                  >
-                    <span className="w-1.5 h-[1px] bg-black/90 font-bold" />
-                  </span>
-                )}
               </span>
             ))}
           </span>

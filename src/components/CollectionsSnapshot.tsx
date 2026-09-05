@@ -193,7 +193,7 @@ export const CollectionsSnapshot: React.FC<CollectionsSnapshotProps> = ({
             </div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.92] text-white font-heading-bold">
               Bespoke Suites, <br />
-              <span className="text-transparent text-stroke-white">Handcrafted</span> <br />
+              <span className="text-wood-texture">Handcrafted</span> <br />
               <span className="text-amber-500">In Chattogram.</span>
             </h2>
             <p className="text-gray-300 text-sm sm:text-base font-light">

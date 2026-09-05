@@ -76,7 +76,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigateTo
           >
             <div className="text-2xl sm:text-3xl font-black tracking-tighter uppercase flex items-center transition-all duration-300 group-hover:scale-[1.03]">
               <span className="animate-gold-shimmer">HEAVEN</span>
-              <span className="text-amber-500 animate-pulse-glow ml-0.5">.</span>
             </div>
             <div className="hidden sm:block border-l border-white/20 pl-3">
               <span className="block text-[9px] uppercase tracking-[0.25em] font-bold text-amber-500">
@@ -89,13 +88,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigateTo
           </a>
 
           {/* Desktop Nav Links in Professional Architectural Typography */}
-          <div className="hidden lg:flex items-center gap-7 text-[13.5px] font-medium tracking-[0.02em] text-zinc-300">
+          <div className="hidden lg:flex items-center gap-6 text-[11.5px] font-bold tracking-[0.14em] uppercase text-zinc-300">
             <button
               onClick={() => {
                 onNavigateToStudio();
                 scrollToSection('bespoke-3d-studio');
               }}
-              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-semibold transition-colors py-1 relative group"
+              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-bold uppercase tracking-[0.14em] transition-colors py-1 relative group"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>3D Custom Studio</span>
@@ -103,35 +102,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigateTo
             </button>
             <button
               onClick={() => scrollToSection('collections')}
-              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
+              className="text-zinc-300 hover:text-white font-bold uppercase tracking-[0.14em] transition-colors py-1 relative group"
             >
               <span>Collections</span>
               <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('bespoke-highlight')}
-              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
+              className="text-zinc-300 hover:text-white font-bold uppercase tracking-[0.14em] transition-colors py-1 relative group"
             >
               <span>Bespoke Service</span>
               <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('why-heaven')}
-              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
+              className="text-zinc-300 hover:text-white font-bold uppercase tracking-[0.14em] transition-colors py-1 relative group"
             >
               <span>Why Heaven</span>
               <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('showroom-experience')}
-              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
+              className="text-zinc-300 hover:text-white font-bold uppercase tracking-[0.14em] transition-colors py-1 relative group"
             >
               <span>Agrabad Showroom</span>
               <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={() => scrollToSection('milestones-timeline')}
-              className="text-zinc-300 hover:text-amber-400 transition-colors py-1 relative group"
+              className="text-zinc-300 hover:text-white font-bold uppercase tracking-[0.14em] transition-colors py-1 relative group"
             >
               <span>Heritage & Story</span>
               <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-amber-400 transition-all duration-300 group-hover:w-full" />

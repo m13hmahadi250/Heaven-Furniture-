@@ -47,7 +47,7 @@ export const ShowroomExperience: React.FC<ShowroomExperienceProps> = ({ onOpenCo
           
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.95] text-white font-heading-bold">
             Visit Our Agrabad Studio. <br />
-            <span className="text-transparent text-stroke-white">Feel the Seasoned</span> <br />
+            <span className="text-wood-texture">Feel the Seasoned</span> <br />
             <span className="text-amber-500">Timber in Person.</span>
           </h2>
           

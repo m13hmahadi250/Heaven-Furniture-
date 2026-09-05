@@ -84,7 +84,7 @@ export const BespokeHighlight: React.FC<BespokeHighlightProps> = ({ onOpenConsul
           
           <motion.h2 variants={itemVariants} className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.95] text-white font-heading-bold">
             Built for Your <br />
-            <span className="text-transparent text-stroke-white">Exact Dimensions</span> <br />
+            <span className="text-wood-texture">Exact Dimensions</span> <br />
             <span className="text-amber-500">& Architecture.</span>
           </motion.h2>
           

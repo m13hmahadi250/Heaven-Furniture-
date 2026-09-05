@@ -68,7 +68,7 @@ export const BrandIntro: React.FC = () => {
           
           <motion.h2 variants={itemVariants} className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.95] text-white font-heading-bold">
             Not an online shop. <br className="hidden sm:inline" />
-            <span className="text-transparent text-stroke-white">A Luxury Bespoke</span> <br />
+            <span className="text-wood-texture">A Luxury Bespoke</span> <br />
             <span className="text-amber-500">Interior Studio.</span>
           </motion.h2>
           

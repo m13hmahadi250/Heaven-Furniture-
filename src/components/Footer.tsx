@@ -33,8 +33,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
           {/* Brand Col */}
           <div className="lg:col-span-4 space-y-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-black font-black text-xl shadow-lg">
-                H
+              <div className="w-10 h-10 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(245,158,11,0.2)] border border-amber-500/30 flex items-center justify-center bg-[#0E1B18] flex-shrink-0 group">
+                <img
+                  src="/favicon.svg"
+                  alt="Heaven Furniture Mart Crest Logo"
+                  className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                />
               </div>
               <div>
                 <div className="text-xl font-black tracking-tight uppercase text-white font-heading-bold">
