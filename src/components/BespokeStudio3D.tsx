@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FurnitureViewer3D } from './ThreeCanvas/FurnitureViewer3D';
+import { InteractiveFloorPlannerModule } from './FloorPlanner3D/InteractiveFloorPlannerModule';
 import { WOOD_OPTIONS, FABRIC_OPTIONS, BRAND_INFO } from '../data/furnitureData';
 import { WoodType, FabricType } from '../types';
 import {
@@ -15,7 +16,9 @@ import {
   Sun,
   ShieldCheck,
   Hammer,
-  Ruler
+  Ruler,
+  Grid,
+  Box
 } from 'lucide-react';
 
 interface BespokeStudio3DProps {
@@ -83,6 +86,7 @@ const ARCHETYPES: ArchetypeOption[] = [
 ];
 
 export const BespokeStudio3D: React.FC<BespokeStudio3DProps> = ({ onOpenConsultation }) => {
+  const [studioMode, setStudioMode] = useState<'floor-planner' | 'single-piece'>('floor-planner');
   const [selectedModel, setSelectedModel] = useState<ModelType>('armchair');
   const [selectedWood, setSelectedWood] = useState<WoodType>('chittagong-teak');
   const [selectedFabric, setSelectedFabric] = useState<FabricType>('ivory-boucle');
@@ -144,6 +148,7 @@ Please confirm timber availability and scheduling for in-home spatial measuremen
 
   return (
     <section className="py-20 lg:py-28 text-[#F5F5F5] relative border-b border-white/10" id="section-studio">
+      <div id="bespoke-3d-studio" className="absolute -top-24" />
       {/* Background ambient lighting */}
       <div className="absolute top-1/3 left-0 w-96 h-96 bg-amber-500/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 right-0 w-96 h-96 bg-amber-950/20 rounded-full blur-[120px] pointer-events-none" />
@@ -155,8 +160,110 @@ Please confirm timber availability and scheduling for in-home spatial measuremen
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        {/* Studio Mode Selector Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10 pb-6 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-[1.5px] bg-amber-500"></span>
+            <div>
+              <span className="text-amber-500 text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] block">
+                Heaven Spatial WebGL Engine
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black uppercase text-white font-heading-bold tracking-tight">
+                3D Bespoke Studio & Floor Planner
+              </h3>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 p-1.5 bg-[#141414] border border-white/10 rounded-2xl shadow-xl w-full sm:w-auto">
+            <button
+              onClick={() => setStudioMode('floor-planner')}
+              className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                studioMode === 'floor-planner'
+                  ? 'bg-amber-500 text-black shadow-lg font-black'
+                  : 'text-zinc-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Grid className="w-4 h-4" />
+              <span>3D Floor Planner</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-black/30 font-mono">NEW</span>
+            </button>
+
+            <button
+              onClick={() => setStudioMode('single-piece')}
+              className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                studioMode === 'single-piece'
+                  ? 'bg-amber-500 text-black shadow-lg font-black'
+                  : 'text-zinc-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Box className="w-4 h-4" />
+              <span>Piece Configurator</span>
+            </button>
+          </div>
+        </div>
+
+        {studioMode === 'floor-planner' ? (
+          <div className="space-y-8 animate-fadeIn">
+            <div className="max-w-3xl space-y-2">
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase leading-[0.95] text-white font-heading-bold">
+                Interactive <span className="text-amber-500">Floor Planner</span> & <br />
+                Spatial Architect.
+              </h2>
+              <p className="text-gray-300 text-sm sm:text-base font-light">
+                Plan your living room, master suite, or executive study with real-world dimensions, magnetic 0.5-ft grid snapping, collision fit alerts, Chittagong Teak textures, live Bill of Materials, and direct WhatsApp quotation.
+              </p>
+            </div>
+
+            {/* Master 3D Spatial Floor Planner Canvas & HUD */}
+            <InteractiveFloorPlannerModule onOpenConsultation={onOpenConsultation} />
+
+            {/* Spatial Engine Capabilities Highlights Bar */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-white/10 text-xs">
+              <div className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-1">
+                <div className="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>Parametric Sizing</span>
+                </div>
+                <p className="text-zinc-400 text-[11px]">
+                  Custom length, width & ceiling height with live square footage and density ratio.
+                </p>
+              </div>
+
+              <div className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-1">
+                <div className="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <Grid className="w-3.5 h-3.5" />
+                  <span>Magnetic Snapping</span>
+                </div>
+                <p className="text-zinc-400 text-[11px]">
+                  0.5 ft magnetic floor grid alignment with instant 90° rotation and halo gizmo controls.
+                </p>
+              </div>
+
+              <div className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-1">
+                <div className="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Collision Alerts</span>
+                </div>
+                <p className="text-zinc-400 text-[11px]">
+                  Real-time clearance verification and conflict detection against walls and furniture.
+                </p>
+              </div>
+
+              <div className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-1">
+                <div className="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>Dual 3D / Blueprint</span>
+                </div>
+                <p className="text-zinc-400 text-[11px]">
+                  Seamless toggle between 360° orbit, top-down 2D blueprint, and eye-level walking modes.
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            {/* Section Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div className="space-y-4 max-w-2xl">
             <div className="flex items-center gap-3">
               <span className="w-10 h-[1.5px] bg-amber-500"></span>
@@ -494,6 +601,8 @@ Please confirm timber availability and scheduling for in-home spatial measuremen
           </div>
 
         </div>
+          </div>
+        )}
 
       </div>
     </section>

@@ -5,7 +5,7 @@ export const BRAND_INFO = {
   tagline: "Designed. Crafted. Customized.",
   category: "Luxury / Bespoke Furniture & Interior Styling",
   location: "Agrabad Access Road, Chattogram, Bangladesh",
-  googleMapsUrl: "https://maps.google.com/?q=Agrabad+Access+Road+Chattogram+Bangladesh",
+  googleMapsUrl: "https://maps.app.goo.gl/G4WAxyoQepCgE6qW6",
   foundedYear: "2020",
   founder: "Abul Kalam Bhuiyan",
   founderTitle: "Managing Director",

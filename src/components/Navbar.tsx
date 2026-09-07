@@ -47,10 +47,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigateTo
               <span className="font-medium">{BRAND_INFO.phone}</span>
             </a>
             <span className="text-gray-700 hidden md:inline">|</span>
-            <span className="hidden md:flex items-center gap-1.5 text-gray-400">
+            <a
+              href={BRAND_INFO.googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center gap-1.5 text-gray-400 hover:text-amber-400 transition-colors cursor-pointer"
+              title="Open Showroom Location on Google Maps"
+            >
               <MapPin className="w-3.5 h-3.5 text-amber-500" />
-              Agrabad Access Road, Chattogram
-            </span>
+              <span>Agrabad Access Road, Chattogram</span>
+            </a>
           </div>
         </div>
       </div>

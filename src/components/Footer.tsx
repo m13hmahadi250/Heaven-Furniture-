@@ -129,7 +129,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
             <ul className="space-y-3 text-xs text-gray-400">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                <span>{BRAND_INFO.location}</span>
+                <a
+                  href={BRAND_INFO.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-amber-400 transition-colors cursor-pointer"
+                  title="Open Agrabad Showroom on Google Maps"
+                >
+                  <span>{BRAND_INFO.location}</span>
+                </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-amber-500 flex-shrink-0" />
@@ -145,7 +153,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
               </li>
               <li className="flex items-start gap-2.5">
                 <Clock className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                <span>Sat – Thu: 10AM – 9PM | Fri: 3PM – 9PM</span>
+                <a
+                  href={BRAND_INFO.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-amber-400 transition-colors cursor-pointer"
+                  title="Showroom Hours & Directions on Google Maps"
+                >
+                  <span>Sat – Thu: 10AM – 9PM | Fri: 3PM – 9PM</span>
+                </a>
               </li>
             </ul>
           </div>

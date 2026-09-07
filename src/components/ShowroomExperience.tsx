@@ -73,10 +73,16 @@ export const ShowroomExperience: React.FC<ShowroomExperienceProps> = ({ onOpenCo
                   <h3 className="text-2xl font-black uppercase tracking-tight text-white font-heading-bold">
                     Heaven Flagship Studio
                   </h3>
-                  <p className="text-xs text-amber-500 flex items-center gap-1.5 mt-1 font-bold">
+                  <a
+                    href={BRAND_INFO.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-amber-500 hover:text-amber-400 flex items-center gap-1.5 mt-1 font-bold transition-colors"
+                    title="Open in Google Maps"
+                  >
                     <MapPin className="w-3.5 h-3.5" />
-                    {BRAND_INFO.location}
-                  </p>
+                    <span>{BRAND_INFO.location}</span>
+                  </a>
                 </div>
 
                 <div className="px-3.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold uppercase tracking-wider">
