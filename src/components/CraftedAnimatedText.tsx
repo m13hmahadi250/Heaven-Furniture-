@@ -43,7 +43,7 @@ export function CraftedAnimatedText() {
         segments: [
           {
             id: 'C-1',
-            clipPath: 'polygon(0% 0%, 100% 0%, 100% 36%, 0% 36%)',
+            clipPath: 'polygon(-15% -35%, 115% -35%, 115% 36%, -15% 36%)',
             initX: -80,
             initY: -70,
             initRot: -22,
@@ -53,7 +53,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'C-2',
-            clipPath: 'polygon(0% 36%, 100% 36%, 100% 64%, 0% 64%)',
+            clipPath: 'polygon(-15% 36%, 115% 36%, 115% 64%, -15% 64%)',
             initX: -95,
             initY: 10,
             initRot: 18,
@@ -63,7 +63,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'C-3',
-            clipPath: 'polygon(0% 64%, 100% 64%, 100% 100%, 0% 100%)',
+            clipPath: 'polygon(-15% 64%, 115% 64%, 115% 135%, -15% 135%)',
             initX: -70,
             initY: 80,
             initRot: -18,
@@ -80,7 +80,7 @@ export function CraftedAnimatedText() {
         segments: [
           {
             id: 'R-1',
-            clipPath: 'polygon(0% 0%, 42% 0%, 42% 100%, 0% 100%)',
+            clipPath: 'polygon(-15% -35%, 44% -35%, 44% 135%, -15% 135%)',
             initX: -60,
             initY: 85,
             initRot: 20,
@@ -90,7 +90,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'R-2',
-            clipPath: 'polygon(42% 0%, 100% 0%, 100% 52%, 42% 52%)',
+            clipPath: 'polygon(44% -35%, 115% -35%, 115% 52%, 44% 52%)',
             initX: 75,
             initY: -75,
             initRot: -25,
@@ -100,7 +100,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'R-3',
-            clipPath: 'polygon(42% 52%, 100% 52%, 100% 100%, 42% 100%)',
+            clipPath: 'polygon(44% 52%, 115% 52%, 115% 135%, 44% 135%)',
             initX: 85,
             initY: 75,
             initRot: 28,
@@ -117,7 +117,7 @@ export function CraftedAnimatedText() {
         segments: [
           {
             id: 'A-1',
-            clipPath: 'polygon(0% 0%, 100% 0%, 100% 46%, 0% 46%)',
+            clipPath: 'polygon(-15% -35%, 115% -35%, 115% 46%, -15% 46%)',
             initX: 12,
             initY: -95,
             initRot: -16,
@@ -127,7 +127,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'A-2',
-            clipPath: 'polygon(0% 46%, 100% 46%, 100% 68%, 0% 68%)',
+            clipPath: 'polygon(-15% 46%, 115% 46%, 115% 68%, -15% 68%)',
             initX: -75,
             initY: -15,
             initRot: 22,
@@ -137,7 +137,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'A-3',
-            clipPath: 'polygon(0% 68%, 100% 68%, 100% 100%, 0% 100%)',
+            clipPath: 'polygon(-15% 68%, 115% 68%, 115% 135%, -15% 135%)',
             initX: 70,
             initY: 75,
             initRot: -20,
@@ -154,7 +154,7 @@ export function CraftedAnimatedText() {
         segments: [
           {
             id: 'F-1',
-            clipPath: 'polygon(0% 0%, 42% 0%, 42% 100%, 0% 100%)',
+            clipPath: 'polygon(-15% -35%, 44% -35%, 44% 135%, -15% 135%)',
             initX: -70,
             initY: 75,
             initRot: -20,
@@ -164,7 +164,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'F-2',
-            clipPath: 'polygon(42% 0%, 100% 0%, 100% 42%, 42% 42%)',
+            clipPath: 'polygon(44% -35%, 115% -35%, 115% 42%, 44% 42%)',
             initX: 80,
             initY: -65,
             initRot: 24,
@@ -174,7 +174,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'F-3',
-            clipPath: 'polygon(42% 42%, 100% 42%, 100% 100%, 42% 100%)',
+            clipPath: 'polygon(44% 42%, 115% 42%, 115% 135%, 44% 135%)',
             initX: 75,
             initY: 48,
             initRot: -16,
@@ -191,7 +191,7 @@ export function CraftedAnimatedText() {
         segments: [
           {
             id: 'T-1',
-            clipPath: 'polygon(0% 0%, 38% 0%, 38% 100%, 0% 100%)',
+            clipPath: 'polygon(-15% -35%, 38% -35%, 38% 135%, -15% 135%)',
             initX: -85,
             initY: -50,
             initRot: -28,
@@ -201,7 +201,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'T-2',
-            clipPath: 'polygon(38% 0%, 62% 0%, 62% 100%, 38% 100%)',
+            clipPath: 'polygon(38% -35%, 62% -35%, 62% 135%, 38% 135%)',
             initX: 0,
             initY: 95,
             initRot: 14,
@@ -211,7 +211,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'T-3',
-            clipPath: 'polygon(62% 0%, 100% 0%, 100% 100%, 62% 100%)',
+            clipPath: 'polygon(62% -35%, 115% -35%, 115% 135%, 62% 135%)',
             initX: 85,
             initY: -50,
             initRot: 28,
@@ -228,7 +228,7 @@ export function CraftedAnimatedText() {
         segments: [
           {
             id: 'E-1',
-            clipPath: 'polygon(0% 0%, 100% 0%, 100% 36%, 0% 36%)',
+            clipPath: 'polygon(-15% -35%, 115% -35%, 115% 36%, -15% 36%)',
             initX: -65,
             initY: -85,
             initRot: 22,
@@ -238,7 +238,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'E-2',
-            clipPath: 'polygon(0% 36%, 100% 36%, 100% 64%, 0% 64%)',
+            clipPath: 'polygon(-15% 36%, 115% 36%, 115% 64%, -15% 64%)',
             initX: 80,
             initY: 10,
             initRot: -22,
@@ -248,7 +248,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'E-3',
-            clipPath: 'polygon(0% 64%, 100% 64%, 100% 100%, 0% 100%)',
+            clipPath: 'polygon(-15% 64%, 115% 64%, 115% 135%, -15% 135%)',
             initX: -70,
             initY: 80,
             initRot: 20,
@@ -265,7 +265,7 @@ export function CraftedAnimatedText() {
         segments: [
           {
             id: 'D-1',
-            clipPath: 'polygon(0% 0%, 40% 0%, 40% 100%, 0% 100%)',
+            clipPath: 'polygon(-15% -35%, 44% -35%, 44% 135%, -15% 135%)',
             initX: -70,
             initY: 65,
             initRot: -18,
@@ -275,7 +275,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'D-2',
-            clipPath: 'polygon(40% 0%, 100% 0%, 100% 50%, 40% 50%)',
+            clipPath: 'polygon(44% -35%, 115% -35%, 115% 50%, 44% 50%)',
             initX: 78,
             initY: -75,
             initRot: 26,
@@ -285,7 +285,7 @@ export function CraftedAnimatedText() {
           },
           {
             id: 'D-3',
-            clipPath: 'polygon(40% 50%, 100% 50%, 100% 100%, 40% 100%)',
+            clipPath: 'polygon(44% 50%, 115% 50%, 115% 135%, 44% 135%)',
             initX: 82,
             initY: 75,
             initRot: -24,
@@ -300,8 +300,8 @@ export function CraftedAnimatedText() {
 
   // Authentic seasoned natural oak & Chittagong teakwood timber grain texture
   const woodTextureStyle: React.CSSProperties = {
-    fontFamily: "'Nexa', 'Nexa Bold', system-ui, -apple-system, sans-serif",
-    fontWeight: 700,
+    fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
+    fontWeight: 900,
     backgroundColor: '#8E6436',
     backgroundImage: `
       linear-gradient(180deg, rgba(230, 202, 158, 0.5) 0%, rgba(175, 135, 85, 0.45) 45%, rgba(110, 75, 38, 0.7) 100%),
@@ -316,12 +316,12 @@ export function CraftedAnimatedText() {
     backgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     color: 'transparent',
-    WebkitTextStroke: '0.85px rgba(235, 208, 162, 0.75)',
-    filter: 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.9)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7))',
+    WebkitTextStroke: '1.2px rgba(245, 218, 172, 0.9)',
+    filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.95)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8))',
   };
 
   return (
-    <span className="inline-block relative select-none">
+    <span className="inline-block relative select-none overflow-visible pt-1.5 pb-0.5">
       {/* Embedded 100% GPU Compositor Keyframes - 0ms Main-Thread CPU Overhead */}
       <style>{`
         @keyframes joinerySegmentFly {
@@ -383,34 +383,49 @@ export function CraftedAnimatedText() {
         }
       `}</style>
 
-      {/* Main typographic container retaining exact typography & font metrics with NEXA font */}
+      {/* Main typographic container retaining exact typography & font metrics with Outfit font */}
       <span
-        className="inline-flex tracking-tighter uppercase font-nexa relative"
-        style={{ fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif", fontWeight: 700 }}
+        className="inline-flex tracking-tighter uppercase font-heading-bold relative overflow-visible"
+        style={{
+          fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif",
+          fontWeight: 900,
+          lineHeight: 1.15,
+        }}
       >
         {letters.map((letterItem) => (
           <span
             key={letterItem.char}
-            className="relative inline-block overflow-visible font-nexa"
-            style={{ fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif", fontWeight: 700 }}
+            className="relative inline-block overflow-visible font-heading-bold"
+            style={{
+              fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif",
+              fontWeight: 900,
+              lineHeight: 1.15,
+              paddingTop: '0.12em',
+              paddingBottom: '0.06em',
+            }}
           >
-            {/* Invisible anchor preserving 100% Nexa font sizing and tracking */}
+            {/* Invisible anchor preserving 100% font sizing and tracking */}
             <span
-              className="opacity-0 pointer-events-none select-none font-nexa"
-              style={{ fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif", fontWeight: 700 }}
+              className="opacity-0 pointer-events-none select-none font-heading-bold"
+              style={{
+                fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif",
+                fontWeight: 900,
+                lineHeight: 1.15,
+              }}
             >
               {letterItem.char}
             </span>
 
             {/* Subtle architectural grain guide track underneath */}
             <span
-              className="absolute inset-0 select-none pointer-events-none opacity-20 font-nexa"
+              className="absolute inset-0 select-none pointer-events-none opacity-25 font-heading-bold"
               style={{
                 ...woodTextureStyle,
                 filter: 'none',
-                WebkitTextStroke: '0.75px rgba(220, 185, 135, 0.3)',
-                fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif",
-                fontWeight: 700,
+                WebkitTextStroke: '1px rgba(220, 185, 135, 0.4)',
+                fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif",
+                fontWeight: 900,
+                lineHeight: 1.15,
               }}
             >
               {letterItem.char}
@@ -420,12 +435,13 @@ export function CraftedAnimatedText() {
             {letterItem.segments.map((segment) => (
               <span
                 key={segment.id}
-                className="joinery-segment absolute inset-0 select-none pointer-events-none font-nexa"
+                className="joinery-segment absolute inset-0 select-none pointer-events-none font-heading-bold"
                 style={
                   {
                     ...woodTextureStyle,
-                    fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif",
-                    fontWeight: 700,
+                    fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif",
+                    fontWeight: 900,
+                    lineHeight: 1.15,
                     clipPath: segment.clipPath,
                     WebkitClipPath: segment.clipPath,
                     '--ix': `${segment.initX}px`,

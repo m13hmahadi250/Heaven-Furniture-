@@ -137,11 +137,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigateTo
             </button>
           </div>
 
-          {/* CTA Actions - Bold Pill Buttons & Audio Toggle */}
+          {/* CTA Actions - Bold Pill Buttons */}
           <div className="hidden sm:flex items-center gap-3">
-            {/* Spatial Audio Toggle & Ambient Controller */}
-            <SpatialAudioControl variant="navbar" />
-
             <a
               href={BRAND_INFO.whatsappUrl}
               target="_blank"
