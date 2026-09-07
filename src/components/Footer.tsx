@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
   };
 
   return (
-    <footer className="bg-[#050505] text-[#F5F5F5] border-t border-white/10 pt-16 pb-12 relative overflow-hidden" id="footer">
+    <footer className="bg-[#050505]/65 backdrop-blur-md text-[#F5F5F5] border-t border-white/10 pt-16 pb-12 relative overflow-hidden" id="footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Main Footer Grid */}

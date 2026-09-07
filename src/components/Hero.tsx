@@ -169,9 +169,9 @@ export const Hero: React.FC<HeroProps> = ({
       id="section-hero"
       className="relative text-[#F5F5F5] overflow-hidden pt-6 pb-16 lg:pt-12 lg:pb-24 border-b border-white/10 min-h-[90vh] flex items-center"
     >
-      {/* 1. Authentic Luxury Architectural Salon Background Photo Layer */}
+      {/* 1. Subtle Luxury Architectural Salon Background Ambience */}
       <div
-        className="absolute inset-0 bg-cover bg-center pointer-events-none opacity-30 mix-blend-luminosity scale-105 transition-transform duration-1000 ease-out"
+        className="absolute inset-0 bg-cover bg-center pointer-events-none opacity-10 mix-blend-luminosity scale-105 transition-transform duration-1000 ease-out"
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85')",
@@ -183,11 +183,11 @@ export const Hero: React.FC<HeroProps> = ({
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at 72% 38%, rgba(245, 158, 11, 0.16) 0%, rgba(18, 34, 29, 0.45) 45%, rgba(4, 9, 8, 0.88) 100%)',
+            'radial-gradient(ellipse at 72% 38%, rgba(245, 158, 11, 0.12) 0%, rgba(18, 34, 29, 0.25) 45%, rgba(4, 9, 8, 0.65) 100%)',
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#040807]/92 via-[#040807]/65 to-[#040807]/30 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#040807]/60 via-transparent to-[#040807]/85 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#040807]/80 via-[#040807]/35 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#040807]/50 via-transparent to-[#040807]/70 pointer-events-none" />
 
       {/* Dynamic luxury ambient spotlight glows with zero-cost radial gradients */}
       <div

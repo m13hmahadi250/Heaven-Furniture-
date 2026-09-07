@@ -58,7 +58,7 @@ export const BespokeHighlight: React.FC<BespokeHighlightProps> = ({ onOpenConsul
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-[#0A0A0A] text-[#F5F5F5] relative overflow-hidden border-b border-white/10" id="bespoke-highlight">
+    <section className="py-20 lg:py-28 bg-transparent text-[#F5F5F5] relative overflow-hidden border-b border-white/10" id="bespoke-highlight">
       {/* Background Watermark Text */}
       <div className="absolute top-10 right-4 select-none pointer-events-none text-[140px] lg:text-[200px] font-black uppercase text-white/[0.015] tracking-tighter leading-none whitespace-nowrap z-0">
         BESPOKE
@@ -84,7 +84,7 @@ export const BespokeHighlight: React.FC<BespokeHighlightProps> = ({ onOpenConsul
           
           <motion.h2 variants={itemVariants} className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.95] text-white font-heading-bold">
             Built for Your <br />
-            <span className="text-wood-texture">Exact Dimensions</span> <br />
+            <span className="text-white">Exact Dimensions</span> <br />
             <span className="text-amber-500">& Architecture.</span>
           </motion.h2>
           

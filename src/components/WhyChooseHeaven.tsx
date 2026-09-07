@@ -52,7 +52,7 @@ export const WhyChooseHeaven: React.FC<WhyChooseHeavenProps> = ({ onOpenConsulta
   };
 
   return (
-    <section className="py-20 lg:py-28 bg-[#0A0A0A] text-[#F5F5F5] relative border-b border-white/10 overflow-hidden" id="why-heaven">
+    <section className="py-20 lg:py-28 bg-transparent text-[#F5F5F5] relative border-b border-white/10 overflow-hidden" id="why-heaven">
       
       {/* Background Watermark Text */}
       <div className="absolute top-12 left-6 select-none pointer-events-none text-[140px] lg:text-[200px] font-black uppercase text-white/[0.015] tracking-tighter leading-none whitespace-nowrap z-0">
@@ -79,7 +79,7 @@ export const WhyChooseHeaven: React.FC<WhyChooseHeavenProps> = ({ onOpenConsulta
           
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.95] text-white font-heading-bold">
             Why Discerning Homeowners <br />
-            <span className="text-wood-texture">Choose Heaven</span> <br />
+            <span className="text-white">Choose Heaven</span> <br />
             <span className="text-amber-500">Furniture Mart.</span>
           </h2>
           

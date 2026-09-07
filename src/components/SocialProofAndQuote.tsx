@@ -8,7 +8,7 @@ interface SocialProofAndQuoteProps {
 
 export const SocialProofAndQuote: React.FC<SocialProofAndQuoteProps> = ({ onOpenConsultation }) => {
   return (
-    <section className="py-20 lg:py-28 bg-[#0A0A0A] text-[#F5F5F5] border-b border-white/10 relative overflow-hidden" id="milestones-timeline">
+    <section className="py-20 lg:py-28 bg-transparent text-[#F5F5F5] border-b border-white/10 relative overflow-hidden" id="milestones-timeline">
       
       {/* Background Watermark Text */}
       <div className="absolute top-12 right-6 select-none pointer-events-none text-[140px] lg:text-[200px] font-black uppercase text-white/[0.015] tracking-tighter leading-none whitespace-nowrap z-0">

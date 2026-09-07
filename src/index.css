@@ -57,6 +57,31 @@
   .font-display-syne {
     font-family: 'Syne', 'Outfit', sans-serif;
   }
+
+  .font-nexa {
+    font-family: 'Nexa', 'Nexa Bold', 'Outfit', sans-serif;
+    font-weight: 700;
+  }
+}
+
+@font-face {
+  font-family: 'Nexa';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Nexa Bold'), local('NexaBold'), local('Nexa-Bold'),
+       url('https://fonts.cdnfonts.com/s/19227/Fontfabric - Nexa-Bold.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/16221/NexaBold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Nexa';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local('Nexa Light'), local('NexaLight'), local('Nexa-Light'),
+       url('https://fonts.cdnfonts.com/s/19227/Fontfabric - Nexa-Light.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/16221/NexaLight.woff') format('woff');
 }
 
 /* Custom smooth dark scrollbar */
@@ -91,21 +116,16 @@
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Authentic Handcrafted Whitish Wood Grain Texture Typography - Seasoned Bleached Ash & Limed Oak */
+/* Clean High-Contrast Typography for Section Headings - Crisp, Readable & Matches Site Hierarchy */
 .text-wood-texture {
-  display: inline-block;
-  color: #D6CEC3;
-  background-color: #D6CEC3;
-  background-image:
-    linear-gradient(180deg, #E2DDD4 0%, #D7CFBF 45%, #C9BEAC 75%, #BCB09C 100%),
-    repeating-linear-gradient(88deg, transparent 0px, rgba(135, 115, 88, 0.18) 1px, transparent 2px, transparent 6px, rgba(150, 128, 100, 0.2) 7px, transparent 9px),
-    repeating-linear-gradient(90deg, #E2DDD4 0px, #D9D2C4 2px, #CFC5B4 4px, #DCD4C6 6px, #C5B9A6 8px, #DED6C7 11px, #CFC4B2 13px, #D6CCC7 16px, #BDAE99 18px, #DDD5C6 22px);
-  background-size: 100% 100%, 100% 100%, 48px 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0.8px rgba(225, 218, 206, 0.7);
-  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.85)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+  display: inline;
+  color: #FFFFFF;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: #FFFFFF;
+  -webkit-text-stroke: 0;
+  filter: none;
 }
 
 /* Subtle glow & shadow utilities */

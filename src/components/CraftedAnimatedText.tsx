@@ -300,6 +300,8 @@ export function CraftedAnimatedText() {
 
   // Authentic seasoned natural oak & Chittagong teakwood timber grain texture
   const woodTextureStyle: React.CSSProperties = {
+    fontFamily: "'Nexa', 'Nexa Bold', system-ui, -apple-system, sans-serif",
+    fontWeight: 700,
     backgroundColor: '#8E6436',
     backgroundImage: `
       linear-gradient(180deg, rgba(230, 202, 158, 0.5) 0%, rgba(175, 135, 85, 0.45) 45%, rgba(110, 75, 38, 0.7) 100%),
@@ -381,25 +383,34 @@ export function CraftedAnimatedText() {
         }
       `}</style>
 
-      {/* Main typographic container retaining exact typography & font metrics */}
-      <span className="inline-flex tracking-tighter uppercase font-black font-heading-bold relative">
+      {/* Main typographic container retaining exact typography & font metrics with NEXA font */}
+      <span
+        className="inline-flex tracking-tighter uppercase font-nexa relative"
+        style={{ fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif", fontWeight: 700 }}
+      >
         {letters.map((letterItem) => (
           <span
             key={letterItem.char}
-            className="relative inline-block overflow-visible"
+            className="relative inline-block overflow-visible font-nexa"
+            style={{ fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif", fontWeight: 700 }}
           >
-            {/* Invisible anchor preserving 100% font sizing and tracking */}
-            <span className="opacity-0 pointer-events-none select-none">
+            {/* Invisible anchor preserving 100% Nexa font sizing and tracking */}
+            <span
+              className="opacity-0 pointer-events-none select-none font-nexa"
+              style={{ fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif", fontWeight: 700 }}
+            >
               {letterItem.char}
             </span>
 
             {/* Subtle architectural grain guide track underneath */}
             <span
-              className="absolute inset-0 select-none pointer-events-none opacity-20 font-black font-heading-bold"
+              className="absolute inset-0 select-none pointer-events-none opacity-20 font-nexa"
               style={{
                 ...woodTextureStyle,
                 filter: 'none',
                 WebkitTextStroke: '0.75px rgba(220, 185, 135, 0.3)',
+                fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif",
+                fontWeight: 700,
               }}
             >
               {letterItem.char}
@@ -409,10 +420,12 @@ export function CraftedAnimatedText() {
             {letterItem.segments.map((segment) => (
               <span
                 key={segment.id}
-                className="joinery-segment absolute inset-0 select-none pointer-events-none font-heading-bold"
+                className="joinery-segment absolute inset-0 select-none pointer-events-none font-nexa"
                 style={
                   {
                     ...woodTextureStyle,
+                    fontFamily: "'Nexa', 'Nexa Bold', system-ui, sans-serif",
+                    fontWeight: 700,
                     clipPath: segment.clipPath,
                     WebkitClipPath: segment.clipPath,
                     '--ix': `${segment.initX}px`,
