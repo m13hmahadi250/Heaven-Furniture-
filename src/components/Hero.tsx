@@ -282,36 +282,34 @@ export const Hero: React.FC<HeroProps> = ({
               {/* Right Column: Fully Interactive Working 3D Showcase & Bespoke Configurator Preview */}
               <motion.div
                 variants={itemVariants}
-                className="lg:col-span-5 xl:col-span-5 space-y-4 bg-[#0D0D0D]/90 border border-white/15 p-4 sm:p-6 rounded-3xl backdrop-blur-xl shadow-2xl relative overflow-hidden"
+                className="lg:col-span-5 xl:col-span-5 flex flex-col gap-4 bg-gradient-to-b from-[#151917]/95 via-[#0D100F]/95 to-[#070908]/98 border border-white/15 hover:border-amber-500/40 p-5 sm:p-6 rounded-3xl backdrop-blur-2xl shadow-2xl relative overflow-hidden transition-all duration-300 group"
               >
-                {/* 1. Header with Live Status & Piece Info */}
+                {/* Top Golden Accent Rim Highlight */}
+                <div className="absolute top-0 inset-x-8 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400/50 to-transparent pointer-events-none" />
+
+                {/* 1. Sleek Minimal Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-white/10">
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                      </span>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
-                        Live 3D WebGL Studio
+                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                      <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-amber-400">
+                        {currentPiece.category}
                       </span>
                     </div>
-                    <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                    <h3 className="text-lg sm:text-xl font-black text-white tracking-tight uppercase font-heading-bold">
                       {currentPiece.title}
                     </h3>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs font-bold text-amber-400 block tracking-tight">
+                    <span className="text-[10px] uppercase tracking-wider text-zinc-400 block font-medium">Bespoke</span>
+                    <span className="text-base sm:text-lg font-black text-amber-400 tracking-tight font-heading-bold">
                       {currentPiece.price}
-                    </span>
-                    <span className="text-[10px] text-zinc-400 block font-light">
-                      {currentPiece.dimensions}
                     </span>
                   </div>
                 </div>
 
-                {/* 2. Interactive 3D WebGL Stage */}
-                <div className="h-[280px] sm:h-[320px] rounded-2xl overflow-hidden shadow-inner bg-[#070707] border border-white/10 relative group">
+                {/* 2. Interactive 3D WebGL Stage (Generous, Clean & Gallery-Grade) */}
+                <div className="h-[320px] sm:h-[360px] rounded-2xl overflow-hidden shadow-inner bg-gradient-to-b from-[#080B0A] to-[#040605] border border-white/10 relative group/stage">
                   <FurnitureViewer3D
                     modelType={currentPiece.id}
                     selectedWood={selectedWood}
@@ -324,44 +322,31 @@ export const Hero: React.FC<HeroProps> = ({
                     interactive={true}
                   />
 
-                  {/* Top Left Floating Instruction Badge */}
-                  <div className="absolute top-3 left-3 pointer-events-none bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1.5 text-[10px] text-zinc-300">
-                    <RotateCw className="w-3 h-3 text-amber-400 animate-spin" style={{ animationDuration: '6s' }} />
-                    <span>360° Drag to inspect</span>
+                  {/* Top Left Floating 360° Drag Badge */}
+                  <div className="absolute top-3 left-3 pointer-events-none bg-black/65 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center gap-2 text-[10px] sm:text-[11px] text-zinc-200 shadow-md">
+                    <RotateCw className="w-3.5 h-3.5 text-amber-400 animate-spin" style={{ animationDuration: '6s' }} />
+                    <span className="font-medium">Drag 360°</span>
                   </div>
 
-                  {/* Top Right Floating Stage Controls */}
-                  <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10">
+                  {/* Top Right Floating Stage Controls Capsule */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/65 backdrop-blur-md p-1 rounded-full border border-white/15 shadow-lg z-10">
                     <button
                       onClick={() => setIsExploded(!isExploded)}
-                      title="Explode Joinery View"
-                      className={`p-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 backdrop-blur-md transition-all border ${
+                      title="Explode Joinery"
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 transition-all ${
                         isExploded
-                          ? 'bg-amber-500 text-black border-amber-400 shadow-md'
-                          : 'bg-black/70 text-zinc-300 border-white/15 hover:text-white hover:border-amber-400/50'
+                          ? 'bg-amber-500 text-black shadow-sm font-extrabold'
+                          : 'text-zinc-300 hover:text-white hover:bg-white/10'
                       }`}
                     >
-                      <Layers className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline text-[9px] uppercase tracking-wider">Joinery</span>
-                    </button>
-
-                    <button
-                      onClick={() => setShowDimensions(!showDimensions)}
-                      title="Toggle Dimension HUD"
-                      className={`p-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 backdrop-blur-md transition-all border ${
-                        showDimensions
-                          ? 'bg-amber-500 text-black border-amber-400 shadow-md'
-                          : 'bg-black/70 text-zinc-300 border-white/15 hover:text-white hover:border-amber-400/50'
-                      }`}
-                    >
-                      <Ruler className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline text-[9px] uppercase tracking-wider">Dimensions</span>
+                      <Layers className="w-3 h-3" />
+                      <span className="text-[9px] uppercase tracking-wider">Joinery</span>
                     </button>
 
                     <button
                       onClick={toggleLighting}
-                      title="Cycle Lighting Mood"
-                      className="p-1.5 rounded-lg text-[10px] font-bold bg-black/70 text-zinc-300 border border-white/15 hover:text-amber-400 hover:border-amber-400/50 backdrop-blur-md transition-all"
+                      title="Toggle Lighting Mood"
+                      className="p-1.5 rounded-full text-zinc-300 hover:text-amber-400 hover:bg-white/10 transition-all"
                     >
                       {lightingMood === 'warm-studio' ? (
                         <Sun className="w-3.5 h-3.5 text-amber-400" />
@@ -374,47 +359,12 @@ export const Hero: React.FC<HeroProps> = ({
                   </div>
                 </div>
 
-                {/* 3. Five Signature Model Switcher Ribbon */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-[11px] text-zinc-400">
-                    <span className="font-semibold uppercase tracking-wider text-amber-400 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" /> Select 3D Piece:
-                    </span>
-                    <span className="text-[10px] text-zinc-400">
-                      {selectedPieceIndex + 1} of {HERO_SIGNATURE_PIECES.length}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-5 gap-1.5">
-                    {HERO_SIGNATURE_PIECES.map((piece, idx) => {
-                      const Icon = piece.icon;
-                      const isActive = selectedPieceIndex === idx;
-                      return (
-                        <button
-                          key={piece.id}
-                          onClick={() => handleSelectPiece(idx)}
-                          className={`py-2 px-1 rounded-xl text-center flex flex-col items-center justify-center gap-1 transition-all border ${
-                            isActive
-                              ? 'bg-amber-500 text-black border-amber-400 font-bold shadow-lg shadow-amber-500/20 scale-[1.02]'
-                              : 'bg-black/50 text-zinc-300 border-white/10 hover:border-amber-400/50 hover:bg-white/5 hover:text-white'
-                          }`}
-                        >
-                          <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-amber-400'}`} />
-                          <span className="text-[10px] font-medium leading-tight truncate max-w-full">
-                            {piece.title.split(' ')[0]}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 4. Live Material Swatches (Working Timber & Fabric Controls) */}
-                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10 text-[11px]">
-                  {/* Timber Swatches */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 block">
-                      Timber Finish:
+                {/* 3. Refined Material Swatches Dock (Clean & Unobtrusive) */}
+                <div className="flex items-center justify-between gap-3 px-3 py-2 rounded-2xl bg-black/45 backdrop-blur-md border border-white/10 text-xs">
+                  {/* Timber Finishes */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      Timber:
                     </span>
                     <div className="flex items-center gap-1.5">
                       {WOOD_SWATCHES.map((w) => (
@@ -422,10 +372,10 @@ export const Hero: React.FC<HeroProps> = ({
                           key={w.id}
                           onClick={() => setSelectedWood(w.id)}
                           title={w.name}
-                          className={`w-7 h-7 rounded-full border-2 transition-transform ${
+                          className={`w-6 h-6 rounded-full border transition-all ${
                             selectedWood === w.id
-                              ? 'border-amber-400 scale-110 shadow-md ring-2 ring-amber-400/30'
-                              : 'border-white/20 hover:scale-105 opacity-80 hover:opacity-100'
+                              ? 'border-amber-400 ring-2 ring-amber-400/50 scale-110 shadow-sm'
+                              : 'border-white/30 hover:scale-105 opacity-75 hover:opacity-100'
                           }`}
                           style={{ backgroundColor: w.hex }}
                         />
@@ -433,10 +383,12 @@ export const Hero: React.FC<HeroProps> = ({
                     </div>
                   </div>
 
-                  {/* Fabric Swatches */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 block">
-                      Upholstery:
+                  <div className="w-[1px] h-5 bg-white/15" />
+
+                  {/* Fabric Upholstery */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      Fabric:
                     </span>
                     <div className="flex items-center gap-1.5">
                       {FABRIC_SWATCHES.map((f) => (
@@ -444,10 +396,10 @@ export const Hero: React.FC<HeroProps> = ({
                           key={f.id}
                           onClick={() => setSelectedFabric(f.id)}
                           title={f.name}
-                          className={`w-7 h-7 rounded-full border-2 transition-transform ${
+                          className={`w-6 h-6 rounded-full border transition-all ${
                             selectedFabric === f.id
-                              ? 'border-amber-400 scale-110 shadow-md ring-2 ring-amber-400/30'
-                              : 'border-white/20 hover:scale-105 opacity-80 hover:opacity-100'
+                              ? 'border-amber-400 ring-2 ring-amber-400/50 scale-110 shadow-sm'
+                              : 'border-white/30 hover:scale-105 opacity-75 hover:opacity-100'
                           }`}
                           style={{ backgroundColor: f.hex }}
                         />
@@ -456,39 +408,52 @@ export const Hero: React.FC<HeroProps> = ({
                   </div>
                 </div>
 
-                {/* 5. Direct Action Buttons & Guarantees */}
-                <div className="pt-2 border-t border-white/10 flex items-center gap-2.5">
-                  <button
-                    onClick={onExploreStudio}
-                    className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/30"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-black" />
-                    <span>Customize in 3D Studio</span>
-                  </button>
-
-                  <button
-                    onClick={onOpenConsultation}
-                    className="py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-amber-400/50 text-white font-semibold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <span>Quote</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                {/* 4. Signature Model Switcher Ribbon */}
+                <div className="grid grid-cols-5 gap-1.5 p-1 bg-black/40 rounded-2xl border border-white/10">
+                  {HERO_SIGNATURE_PIECES.map((piece, idx) => {
+                    const Icon = piece.icon;
+                    const isActive = selectedPieceIndex === idx;
+                    return (
+                      <button
+                        key={piece.id}
+                        onClick={() => handleSelectPiece(idx)}
+                        className={`py-2 px-1 rounded-xl text-center flex flex-col items-center justify-center gap-1 transition-all ${
+                          isActive
+                            ? 'bg-amber-500 text-black font-bold shadow-md shadow-amber-500/25 scale-[1.02]'
+                            : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                        }`}
+                      >
+                        <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-amber-400'}`} />
+                        <span className="text-[9px] sm:text-[10px] font-semibold leading-tight truncate max-w-full">
+                          {piece.title.split(' ')[0]}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
 
-                {/* 6. Authentic Pillars */}
-                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/10 text-[10px] text-zinc-400">
-                  <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-amber-500 flex-shrink-0" />
-                    <span>Seasoned Teak</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-amber-500 flex-shrink-0" />
-                    <span>10-Yr Warranty</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-amber-500 flex-shrink-0" />
-                    <span>Laser Measuring</span>
-                  </div>
+                {/* 5. Attractive Primary Call-to-Action */}
+                <button
+                  onClick={onExploreStudio}
+                  className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:brightness-110 text-black font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-amber-500/20 active:scale-[0.99] group/btn"
+                >
+                  <Sparkles className="w-4 h-4 text-black group-hover/btn:rotate-12 transition-transform" />
+                  <span>Open 3D Bespoke Studio</span>
+                  <ArrowRight className="w-4 h-4 text-black group-hover/btn:translate-x-1 transition-transform" />
+                </button>
+
+                {/* 6. Minimal Reassurance Footer */}
+                <div className="flex items-center justify-center gap-2 text-[10px] text-zinc-400">
+                  <span>100% Chittagong Teak</span>
+                  <span className="text-zinc-600">•</span>
+                  <span>10-Yr Guarantee</span>
+                  <span className="text-zinc-600">•</span>
+                  <button
+                    onClick={onOpenConsultation}
+                    className="text-amber-400 hover:text-amber-300 font-medium underline underline-offset-2 transition-colors"
+                  >
+                    Bespoke Consultation
+                  </button>
                 </div>
               </motion.div>
 

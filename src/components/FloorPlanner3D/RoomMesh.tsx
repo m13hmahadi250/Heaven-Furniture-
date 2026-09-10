@@ -20,7 +20,17 @@ export const RoomMesh: React.FC<RoomMeshProps> = ({
   onFloorPointerDown,
   onFloorPointerMove
 }) => {
-  const { widthFt, lengthFt, ceilingHeightFt, floorFinish, wallColor, hasCornerWindow, outsideVista, openings = [] } = config;
+  const {
+    widthFt,
+    lengthFt,
+    ceilingHeightFt,
+    floorFinish,
+    wallColor,
+    hasCornerWindow,
+    outsideVista,
+    openings = [],
+    lightingPreset = 'day'
+  } = config;
 
   const currentFloorMeta = useMemo(
     () => FLOOR_FINISHES.find((f) => f.id === floorFinish) || FLOOR_FINISHES[0],
@@ -128,6 +138,7 @@ export const RoomMesh: React.FC<RoomMeshProps> = ({
             timberMaterial={timberMaterial}
             openings={openings}
             outsideVista={outsideVista}
+            lightingPreset={lightingPreset}
             position={[0, 0, -halfL]}
             rotation={[0, 0, 0]}
             isCutaway={wallVisibility === 'cutaway'}
@@ -144,6 +155,7 @@ export const RoomMesh: React.FC<RoomMeshProps> = ({
             timberMaterial={timberMaterial}
             openings={openings}
             outsideVista={outsideVista}
+            lightingPreset={lightingPreset}
             position={[-halfW, 0, 0]}
             rotation={[0, Math.PI / 2, 0]}
             isCutaway={wallVisibility === 'cutaway'}
@@ -160,6 +172,7 @@ export const RoomMesh: React.FC<RoomMeshProps> = ({
             timberMaterial={timberMaterial}
             openings={openings}
             outsideVista={outsideVista}
+            lightingPreset={lightingPreset}
             position={[halfW, 0, 0]}
             rotation={[0, -Math.PI / 2, 0]}
             isCutaway={wallVisibility === 'cutaway'}
@@ -177,6 +190,7 @@ export const RoomMesh: React.FC<RoomMeshProps> = ({
               timberMaterial={timberMaterial}
               openings={openings}
               outsideVista={outsideVista}
+              lightingPreset={lightingPreset}
               position={[0, 0, halfL]}
               rotation={[0, Math.PI, 0]}
               isCutaway={wallVisibility === 'cutaway'}
@@ -191,17 +205,45 @@ export const RoomMesh: React.FC<RoomMeshProps> = ({
           <mesh>
             <planeGeometry args={[14, 10]} />
             <meshBasicMaterial
-              color={outsideVista === 'garden' ? '#A7F3D0' : '#BAE6FD'}
+              color={
+                lightingPreset === 'evening'
+                  ? '#FB923C'
+                  : lightingPreset === 'gallery'
+                  ? '#1E293B'
+                  : outsideVista === 'garden'
+                  ? '#A7F3D0'
+                  : '#BAE6FD'
+              }
               side={THREE.DoubleSide}
             />
           </mesh>
           <mesh position={[-2, -1.5, 0.1]}>
             <boxGeometry args={[2.5, 4.5, 0.1]} />
-            <meshBasicMaterial color="#064E3B" opacity={0.5} transparent />
+            <meshBasicMaterial
+              color={
+                lightingPreset === 'evening'
+                  ? '#451A03'
+                  : lightingPreset === 'gallery'
+                  ? '#090D16'
+                  : '#064E3B'
+              }
+              opacity={lightingPreset === 'gallery' ? 0.65 : 0.5}
+              transparent
+            />
           </mesh>
           <mesh position={[1.5, -2.0, 0.1]}>
             <boxGeometry args={[3.5, 3.5, 0.1]} />
-            <meshBasicMaterial color="#047857" opacity={0.4} transparent />
+            <meshBasicMaterial
+              color={
+                lightingPreset === 'evening'
+                  ? '#7C2D12'
+                  : lightingPreset === 'gallery'
+                  ? '#0F172A'
+                  : '#047857'
+              }
+              opacity={lightingPreset === 'gallery' ? 0.5 : 0.4}
+              transparent
+            />
           </mesh>
         </group>
       )}

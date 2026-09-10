@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141B24" />
+      <stop offset="40%" stop-color="#182330" />
+      <stop offset="100%" stop-color="#0F141A" />
+    </linearGradient>
+
+    <!-- Glass Partition Cyan Glow -->
+    <linearGradient id="cyanGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.7" />
+      <stop offset="50%" stop-color="#0284C7" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#0369A1" stop-opacity="0.05" />
+    </linearGradient>
+
+    <!-- Executive Chair -->
+    <linearGradient id="chairGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+
+    <!-- Skin Tones -->
+    <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E2A77E" />
+      <stop offset="50%" stop-color="#D49366" />
+      <stop offset="100%" stop-color="#BF7E53" />
+    </linearGradient>
+    <linearGradient id="skinShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C27A4B" />
+      <stop offset="100%" stop-color="#A56238" />
+    </linearGradient>
+
+    <!-- Red/Orange Beard -->
+    <linearGradient id="beardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EA580C" />
+      <stop offset="40%" stop-color="#C2410C" />
+      <stop offset="100%" stop-color="#9A3412" />
+    </linearGradient>
+
+    <!-- Shirt Gradients -->
+    <linearGradient id="shirtGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E0F2FE" />
+      <stop offset="40%" stop-color="#BAE6FD" />
+      <stop offset="100%" stop-color="#7DD3FC" />
+    </linearGradient>
+    <linearGradient id="shirtShadow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#93C5FD" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.2" />
+    </linearGradient>
+
+    <!-- Table Surface & Reflection -->
+    <linearGradient id="tableGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CBD5E1" stop-opacity="0.9" />
+      <stop offset="30%" stop-color="#E2E8F0" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#F8FAFC" stop-opacity="0.95" />
+    </linearGradient>
+
+    <filter id="softBlur">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+  </defs>
+
+  <!-- Background Architecture (Showroom / Office) -->
+  <rect width="400" height="480" fill="url(#bgGrad)" />
+
+  <!-- Ceiling Perspective & Ceiling Lights -->
+  <polygon points="260,0 400,0 400,180 280,140" fill="#253342" opacity="0.4" />
+  <rect x="290" y="25" width="28" height="16" rx="3" fill="#FFF" opacity="0.5" />
+  <rect x="340" y="45" width="28" height="16" rx="3" fill="#FFF" opacity="0.5" />
+  <rect x="30" y="40" width="35" height="18" rx="3" fill="#FFF" opacity="0.4" />
+
+  <!-- Glass Pillars & Ambient Cyan LED Cove -->
+  <line x1="100" y1="0" x2="100" y2="280" stroke="#38BDF8" stroke-width="3" opacity="0.8" />
+  <line x1="160" y1="0" x2="160" y2="280" stroke="#38BDF8" stroke-width="2" opacity="0.7" />
+  <line x1="220" y1="0" x2="220" y2="280" stroke="#38BDF8" stroke-width="1.5" opacity="0.5" />
+  <rect x="90" y="0" width="80" height="260" fill="url(#cyanGlow)" opacity="0.25" />
+
+  <!-- Executive High-Back Chair Behind -->
+  <path d="M125 150 C125 100, 275 100, 275 150 L285 300 L115 300 Z" fill="url(#chairGrad)" />
+  <path d="M110 160 C90 190, 85 240, 115 300" stroke="#475569" stroke-width="8" fill="none" stroke-linecap="round" />
+  <path d="M290 160 C310 190, 315 240, 285 300" stroke="#475569" stroke-width="8" fill="none" stroke-linecap="round" />
+
+  <!-- Jacket Draped on Chair -->
+  <path d="M245 160 C265 170, 290 200, 285 270 L260 270 Z" fill="#334155" opacity="0.9" />
+
+  <!-- Hair (Black with silver temples) -->
+  <ellipse cx="200" cy="115" rx="52" ry="58" fill="#1E293B" />
+  <path d="M150 115 Q170 85 200 85 Q230 85 250 115 C240 100, 220 90, 200 90 C180 90, 160 100, 150 115 Z" fill="#0F172A" />
+
+  <!-- Ears -->
+  <ellipse cx="148" cy="140" rx="9" ry="16" fill="#C27A4B" />
+  <ellipse cx="252" cy="140" rx="9" ry="16" fill="#C27A4B" />
+
+  <!-- Neck -->
+  <path d="M176 160 L176 195 C185 200, 215 200, 224 195 L224 160 Z" fill="url(#skinShadow)" />
+
+  <!-- Head / Face -->
+  <path d="M152 125 C152 95, 248 95, 248 125 C248 165, 235 185, 200 185 C165 185, 152 165, 152 125 Z" fill="url(#skinGrad)" />
+
+  <!-- Eyebrows (Dark, prominent, authoritative) -->
+  <path d="M165 120 Q178 116 190 121" stroke="#1E293B" stroke-width="4.5" stroke-linecap="round" fill="none" />
+  <path d="M210 121 Q222 116 235 120" stroke="#1E293B" stroke-width="4.5" stroke-linecap="round" fill="none" />
+
+  <!-- Eyes -->
+  <ellipse cx="178" cy="130" rx="6.5" ry="4" fill="#FFFFFF" />
+  <ellipse cx="178" cy="130" rx="3.5" ry="3.5" fill="#1E1B18" />
+  <circle cx="179" cy="129" r="1" fill="#FFFFFF" />
+
+  <ellipse cx="222" cy="130" rx="6.5" ry="4" fill="#FFFFFF" />
+  <ellipse cx="222" cy="130" rx="3.5" ry="3.5" fill="#1E1B18" />
+  <circle cx="223" cy="129" r="1" fill="#FFFFFF" />
+
+  <!-- Nose -->
+  <path d="M200 125 L196 148 Q200 152 204 148 Z" fill="url(#skinShadow)" />
+  <circle cx="193" cy="148" r="2.5" fill="#A56238" opacity="0.6" />
+  <circle cx="207" cy="148" r="2.5" fill="#A56238" opacity="0.6" />
+
+  <!-- Mouth -->
+  <path d="M188 162 Q200 165 212 162" stroke="#9A3412" stroke-width="2.5" fill="none" stroke-linecap="round" />
+
+  <!-- Distinctive Red / Henna Dyed Beard & Moustache (Key Feature) -->
+  <path d="M174 153 Q200 157 226 153 Q215 163 200 163 Q185 163 174 153 Z" fill="url(#beardGrad)" />
+  <path d="M152 142 C152 175, 160 205, 200 205 C240 205, 248 175, 248 142 C242 165, 230 188, 200 188 C170 188, 158 165, 152 142 Z" fill="url(#beardGrad)" />
+  <!-- Beard Texture Highlights -->
+  <path d="M165 170 Q180 198 200 202 Q220 198 235 170" stroke="#F97316" stroke-width="1.5" fill="none" opacity="0.7" />
+  <path d="M172 178 Q188 198 200 200 Q212 198 228 178" stroke="#FB923C" stroke-width="1.2" fill="none" opacity="0.6" />
+
+  <!-- Crisp Light Blue Dress Shirt -->
+  <!-- Shoulders & Torso -->
+  <path d="M125 215 C115 230, 85 260, 65 340 L335 340 C315 260, 285 230, 275 215 C250 205, 228 200, 200 200 C172 200, 150 205, 125 215 Z" fill="url(#shirtGrad)" />
+
+  <!-- Shirt Shadow & Folds -->
+  <path d="M125 215 C115 230, 85 260, 65 340 L130 340 C140 280, 160 240, 165 220 Z" fill="url(#shirtShadow)" />
+  <path d="M275 215 C285 230, 315 260, 335 340 L270 340 C260 280, 240 240, 235 220 Z" fill="url(#shirtShadow)" opacity="0.6" />
+
+  <!-- Shirt Collar -->
+  <polygon points="175,195 190,225 200,205 175,195" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5" />
+  <polygon points="225,195 210,225 200,205 225,195" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5" />
+
+  <!-- Button Placket -->
+  <rect x="195" y="210" width="10" height="130" fill="#E0F2FE" />
+  <circle cx="200" cy="235" r="2" fill="#93C5FD" />
+  <circle cx="200" cy="265" r="2" fill="#93C5FD" />
+  <circle cx="200" cy="295" r="2" fill="#93C5FD" />
+
+  <!-- Breast Pocket with Pen (As in photo) -->
+  <path d="M225 245 L250 245 L248 275 C248 280, 227 280, 227 275 Z" fill="#BAE6FD" stroke="#7DD3FC" stroke-width="1.5" />
+  <!-- Dark Pen Clip -->
+  <rect x="235" y="235" width="4" height="15" rx="1.5" fill="#0F172A" />
+  <circle cx="237" cy="237" r="2" fill="#D97706" />
+
+  <!-- Clasped Hands on Desk -->
+  <path d="M140 315 C150 300, 175 295, 200 305 C225 295, 250 300, 260 315 C240 335, 160 335, 140 315 Z" fill="url(#skinGrad)" />
+  <!-- Finger Joinery Details -->
+  <path d="M185 305 L200 315 L215 305" stroke="#C27A4B" stroke-width="2" fill="none" stroke-linecap="round" />
+  <path d="M180 312 L200 322 L220 312" stroke="#C27A4B" stroke-width="2" fill="none" stroke-linecap="round" />
+
+  <!-- Executive Table (Glossy Glass Surface) -->
+  <rect x="0" y="335" width="400" height="145" fill="url(#tableGrad)" />
+  <line x1="0" y1="335" x2="400" y2="335" stroke="#94A3B8" stroke-width="1.5" />
+
+  <!-- Reflection of Hands & Shirt on Table -->
+  <ellipse cx="200" cy="348" rx="45" ry="10" fill="#7DD3FC" opacity="0.3" filter="url(#softBlur)" />
+
+  <!-- Smartphone on Table (As in photo) -->
+  <rect x="180" y="375" width="55" height="90" rx="8" fill="#1E293B" stroke="#64748B" stroke-width="2" transform="rotate(-15 207 420)" />
+  <rect x="185" y="380" width="45" height="80" rx="5" fill="#0F172A" transform="rotate(-15 207 420)" />
+  <!-- Screen Reflection -->
+  <line x1="190" y1="385" x2="225" y2="445" stroke="#38BDF8" stroke-width="12" opacity="0.25" stroke-linecap="round" />
+
+  <!-- Reading Glasses on Table (As in photo) -->
+  <rect x="30" y="355" width="30" height="18" rx="4" fill="none" stroke="#CBD5E1" stroke-width="2" />
+  <rect x="68" y="355" width="30" height="18" rx="4" fill="none" stroke="#CBD5E1" stroke-width="2" />
+  <line x1="60" y1="363" x2="68" y2="363" stroke="#CBD5E1" stroke-width="2" />
+  <line x1="30" y1="360" x2="15" y2="375" stroke="#CBD5E1" stroke-width="1.5" />
+  <line x1="98" y1="360" x2="115" y2="375" stroke="#CBD5E1" stroke-width="1.5" />
+</svg>

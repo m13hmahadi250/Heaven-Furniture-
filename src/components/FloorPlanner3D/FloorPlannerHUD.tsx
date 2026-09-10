@@ -9,13 +9,17 @@ import {
   FileText,
   Undo2,
   Redo2,
-  RotateCw
+  RotateCw,
+  Sun,
+  Sunset,
+  Sparkles
 } from 'lucide-react';
 import {
   RoomConfig,
   CameraMode,
   UnitSystem,
-  RoomPresetId
+  RoomPresetId,
+  LightingPreset
 } from './types';
 import { ROOM_PRESETS } from './catalogData';
 import { StudioTab } from './StudioDock';
@@ -29,9 +33,11 @@ interface FloorPlannerHUDProps {
   canRedo: boolean;
   placedCount: number;
   activeTab: StudioTab;
+  lightingPreset?: LightingPreset;
   onSelectTab: (tab: StudioTab) => void;
   onSelectPreset: (presetId: RoomPresetId) => void;
   onChangeCameraMode: (mode: CameraMode) => void;
+  onChangeLightingPreset: (preset: LightingPreset) => void;
   onToggleAutoRotate: () => void;
   onToggleUnitSystem: () => void;
   onUndo: () => void;
@@ -48,9 +54,11 @@ export const FloorPlannerHUD: React.FC<FloorPlannerHUDProps> = ({
   canRedo,
   placedCount,
   activeTab,
+  lightingPreset = 'day',
   onSelectTab,
   onSelectPreset,
   onChangeCameraMode,
+  onChangeLightingPreset,
   onToggleAutoRotate,
   onToggleUnitSystem,
   onUndo,
@@ -137,8 +145,50 @@ export const FloorPlannerHUD: React.FC<FloorPlannerHUDProps> = ({
           </div>
         </div>
 
-        {/* RIGHT TOOLBAR: Camera View Modes, Undo/Redo & Blueprint Export */}
+        {/* RIGHT TOOLBAR: Lighting Presets, Camera View Modes, Undo/Redo & Blueprint Export */}
         <div className="flex items-center gap-2 pointer-events-auto ml-auto">
+          {/* Lighting Environment Preset Selector (Day / Evening / Gallery) */}
+          <div className="backdrop-blur-xl bg-black/85 border border-white/15 p-1 rounded-2xl flex items-center gap-1 shadow-2xl">
+            <button
+              onClick={() => onChangeLightingPreset('day')}
+              className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                lightingPreset === 'day'
+                  ? 'bg-amber-500 text-black font-black shadow-md'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Day: Natural daylight with crisp sunbeams and soft sky bounce (5500K)"
+            >
+              <Sun className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Day</span>
+            </button>
+
+            <button
+              onClick={() => onChangeLightingPreset('evening')}
+              className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                lightingPreset === 'evening'
+                  ? 'bg-amber-500 text-black font-black shadow-md'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Evening: Warm golden hour sunset glow with intimate interior downlights (2700K)"
+            >
+              <Sunset className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Evening</span>
+            </button>
+
+            <button
+              onClick={() => onChangeLightingPreset('gallery')}
+              className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                lightingPreset === 'gallery'
+                  ? 'bg-amber-500 text-black font-black shadow-md'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Gallery: Curated showroom track spotlights with high-contrast shadows"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Gallery</span>
+            </button>
+          </div>
+
           {/* Camera View Mode Switcher */}
           <div className="backdrop-blur-xl bg-black/85 border border-white/15 p-1 rounded-2xl flex items-center gap-1 shadow-2xl">
             <button

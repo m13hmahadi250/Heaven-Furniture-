@@ -1,12 +1,14 @@
 import React from 'react';
 import { MD_QUOTE, MILESTONES, REVIEWS, BRAND_INFO } from '../data/furnitureData';
 import { Quote, Sparkles, Award, Star, CheckCircle, ArrowRight } from 'lucide-react';
+import directorImage from '../assets/images/regenerated_image_1789053959658.png';
 
 interface SocialProofAndQuoteProps {
   onOpenConsultation: () => void;
 }
 
 export const SocialProofAndQuote: React.FC<SocialProofAndQuoteProps> = ({ onOpenConsultation }) => {
+
   return (
     <section className="py-20 lg:py-28 bg-transparent text-[#F5F5F5] border-b border-white/10 relative overflow-hidden" id="milestones-timeline">
       
@@ -24,11 +26,32 @@ export const SocialProofAndQuote: React.FC<SocialProofAndQuoteProps> = ({ onOpen
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
             
-            {/* Left: MD Quote Icon & Monogram */}
+            {/* Left: MD Quote Portrait & Credentials */}
             <div className="lg:col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left space-y-4">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-[#1A1A1A] border border-amber-500/40 p-1 shadow-xl flex items-center justify-center">
-                <div className="w-full h-full bg-[#0A0A0A] rounded-2xl flex items-center justify-center font-black text-2xl sm:text-3xl text-amber-500 font-heading-bold">
-                  AKB
+              {/* Permanent Fixed Executive Portrait Frame (Non-editable, Locked) */}
+              <div
+                className="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl bg-gradient-to-b from-[#242424] via-[#161616] to-[#0A0A0A] border-2 border-amber-500/50 p-1.5 shadow-2xl shadow-amber-500/10 flex items-center justify-center relative select-none"
+                title="Managing Director Abul Kalam Bhuiyan"
+              >
+                {/* Target Inner Container matching selector */}
+                <div className="w-full h-full bg-[#0A0A0A] rounded-2xl flex items-center justify-center relative overflow-hidden shadow-inner border border-white/10">
+                  <img
+                    src={directorImage}
+                    alt={MD_QUOTE.author}
+                    className="w-full h-full object-cover object-top select-none pointer-events-none"
+                    draggable={false}
+                    referrerPolicy="no-referrer"
+                  />
+                  {/* Subtle inner protective glass tint */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
+                </div>
+
+                {/* Verified Golden Leadership Badge Corner */}
+                <div
+                  className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-amber-500 text-black flex items-center justify-center shadow-lg border-2 border-[#121212]"
+                  title="Verified Founder & Managing Director"
+                >
+                  <CheckCircle className="w-3.5 h-3.5 text-black stroke-[3]" />
                 </div>
               </div>
 
@@ -42,11 +65,6 @@ export const SocialProofAndQuote: React.FC<SocialProofAndQuoteProps> = ({ onOpen
                 <p className="text-[11px] text-gray-400 mt-1">
                   Heaven Furniture Mart • Est. {BRAND_INFO.foundedYear}
                 </p>
-              </div>
-
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#1A1A1A] border border-white/10 text-[11px] text-emerald-400 font-bold uppercase tracking-wider">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Verified Artisan Director</span>
               </div>
             </div>
 

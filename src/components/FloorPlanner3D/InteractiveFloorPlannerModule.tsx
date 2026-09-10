@@ -13,7 +13,8 @@ import {
   CatalogItem,
   WallOpening,
   WallOpeningType,
-  WallSide
+  WallSide,
+  LightingPreset
 } from './types';
 import { ROOM_PRESETS, CATALOG_ITEMS } from './catalogData';
 import { snapToGrid, calculateFurnitureFootprintSqFt } from './collisionUtils';
@@ -39,7 +40,8 @@ export const InteractiveFloorPlannerModule: React.FC<InteractiveFloorPlannerModu
     wallColor: initialPreset.recommendedWall,
     hasCornerWindow: true,
     outsideVista: 'garden',
-    openings: initialPreset.defaultOpenings || []
+    openings: initialPreset.defaultOpenings || [],
+    lightingPreset: 'day'
   });
 
   const [placedItems, setPlacedItems] = useState<PlacedFurniture[]>(() =>
@@ -156,6 +158,13 @@ export const InteractiveFloorPlannerModule: React.FC<InteractiveFloorPlannerModu
     setRoomConfig((prev) => ({
       ...prev,
       hasCornerWindow: !prev.hasCornerWindow
+    }));
+  }, []);
+
+  const handleChangeLightingPreset = useCallback((preset: LightingPreset) => {
+    setRoomConfig((prev) => ({
+      ...prev,
+      lightingPreset: preset
     }));
   }, []);
 
@@ -383,9 +392,11 @@ export const InteractiveFloorPlannerModule: React.FC<InteractiveFloorPlannerModu
         canRedo={canRedo}
         placedCount={placedItems.length}
         activeTab={activeTab}
+        lightingPreset={roomConfig.lightingPreset || 'day'}
         onSelectTab={setActiveTab}
         onSelectPreset={handleSelectPreset}
         onChangeCameraMode={setCameraMode}
+        onChangeLightingPreset={handleChangeLightingPreset}
         onToggleAutoRotate={() => setAutoRotate(!autoRotate)}
         onToggleUnitSystem={() => setUnitSystem(unitSystem === 'imperial' ? 'metric' : 'imperial')}
         onUndo={handleUndo}
@@ -405,6 +416,7 @@ export const InteractiveFloorPlannerModule: React.FC<InteractiveFloorPlannerModu
         onUpdateDimensions={handleUpdateDimensions}
         onUpdateFinish={handleUpdateFinish}
         onToggleWindow={handleToggleWindow}
+        onChangeLightingPreset={handleChangeLightingPreset}
         onAddOpening={handleAddOpening}
         onUpdateOpening={handleUpdateOpening}
         onDeleteOpening={handleDeleteOpening}

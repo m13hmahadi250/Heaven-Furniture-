@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 
@@ -8,11 +9,35 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: "15mb" }));
+app.use(express.urlencoded({ limit: "15mb", extended: true }));
 
 // API health endpoint
 app.get("/api/health", (_req: Request, res: Response) => {
   res.json({ status: "ok", brand: "Heaven Furniture Mart", location: "Agrabad, Chattogram" });
+});
+
+// Managing Director Photo Upload Endpoint (Persists to public/director.png)
+app.post("/api/upload-md-photo", (req: Request, res: Response) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) {
+      return res.status(400).json({ error: "Missing imageBase64 data" });
+    }
+    const matches = imageBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    const buffer = matches ? Buffer.from(matches[2], "base64") : Buffer.from(imageBase64, "base64");
+    
+    const publicDir = path.join(process.cwd(), "public");
+    if (!fs.existsSync(publicDir)) {
+      fs.mkdirSync(publicDir, { recursive: true });
+    }
+    
+    const filePath = path.join(publicDir, "director.png");
+    fs.writeFileSync(filePath, buffer);
+    return res.json({ success: true, url: "/director.png" });
+  } catch (err: any) {
+    return res.status(500).json({ error: err?.message || "Failed to save photo" });
+  }
 });
 
 // AI Furniture & Interior Consultant Endpoint

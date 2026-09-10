@@ -19,7 +19,9 @@ import {
   Layers,
   ChevronRight,
   DoorOpen,
-  Maximize2
+  Maximize2,
+  Sun,
+  Sunset
 } from 'lucide-react';
 import {
   CatalogCategory,
@@ -32,7 +34,8 @@ import {
   WallColorId,
   WallOpening,
   WallOpeningType,
-  WallSide
+  WallSide,
+  LightingPreset
 } from './types';
 import {
   CATALOG_ITEMS,
@@ -68,6 +71,7 @@ interface StudioDockProps {
   onClearAll: () => void;
   onExportBlueprint: () => void;
   onOpenConsultation?: (initialData?: any) => void;
+  onChangeLightingPreset?: (preset: LightingPreset) => void;
 }
 
 const CATEGORY_TABS: { id: CatalogCategory; label: string; icon: React.FC<{ className?: string }> }[] = [
@@ -96,7 +100,8 @@ export const StudioDock: React.FC<StudioDockProps> = ({
   onRotateItem90,
   onClearAll,
   onExportBlueprint,
-  onOpenConsultation
+  onOpenConsultation,
+  onChangeLightingPreset
 }) => {
   const [activeCatalogCategory, setActiveCatalogCategory] = useState<CatalogCategory>('living');
   const [catalogSearch, setCatalogSearch] = useState('');
@@ -829,6 +834,78 @@ Please confirm seasoned timber readiness and schedule a private showroom consult
                     })}
                   </div>
                 )}
+              </div>
+
+              {/* Lighting Environment Selector */}
+              <div className="space-y-2 pt-3 border-t border-white/10">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
+                    Lighting Environment Preset
+                  </label>
+                  <span className="text-[10px] font-mono text-amber-400 font-bold uppercase px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+                    {roomConfig.lightingPreset === 'evening'
+                      ? 'Evening (2700K)'
+                      : roomConfig.lightingPreset === 'gallery'
+                      ? 'Gallery (High CRI)'
+                      : 'Day (5500K)'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  {/* Day */}
+                  <button
+                    onClick={() => onChangeLightingPreset?.('day')}
+                    className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all text-center ${
+                      (roomConfig.lightingPreset || 'day') === 'day'
+                        ? 'bg-amber-500/15 border-amber-500 ring-1 ring-amber-500'
+                        : 'bg-white/5 border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-amber-400/20 flex items-center justify-center text-amber-400">
+                      <Sun className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-bold text-white leading-tight">Daylight</div>
+                      <div className="text-[9px] text-zinc-400 mt-0.5">Crisp Sunbeams</div>
+                    </div>
+                  </button>
+
+                  {/* Evening */}
+                  <button
+                    onClick={() => onChangeLightingPreset?.('evening')}
+                    className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all text-center ${
+                      roomConfig.lightingPreset === 'evening'
+                        ? 'bg-amber-500/15 border-amber-500 ring-1 ring-amber-500'
+                        : 'bg-white/5 border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-orange-400/20 flex items-center justify-center text-orange-400">
+                      <Sunset className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-bold text-white leading-tight">Evening</div>
+                      <div className="text-[9px] text-zinc-400 mt-0.5">Warm Dusk Glow</div>
+                    </div>
+                  </button>
+
+                  {/* Gallery */}
+                  <button
+                    onClick={() => onChangeLightingPreset?.('gallery')}
+                    className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all text-center ${
+                      roomConfig.lightingPreset === 'gallery'
+                        ? 'bg-amber-500/15 border-amber-500 ring-1 ring-amber-500'
+                        : 'bg-white/5 border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-indigo-400/20 flex items-center justify-center text-indigo-400">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-bold text-white leading-tight">Gallery</div>
+                      <div className="text-[9px] text-zinc-400 mt-0.5">Track Spotlights</div>
+                    </div>
+                  </button>
+                </div>
               </div>
 
               {/* Corner Floor-to-Ceiling Window Toggle */}

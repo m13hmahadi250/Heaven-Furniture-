@@ -80,8 +80,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigateTo
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            <div className="text-2xl sm:text-3xl font-black tracking-tighter uppercase flex items-center transition-all duration-300 group-hover:scale-[1.03]">
-              <span className="animate-gold-shimmer">HEAVEN</span>
+            <div className="text-2xl sm:text-3xl font-black tracking-tighter uppercase flex flex-col transition-all duration-300 group-hover:scale-[1.02]">
+              <span className="animate-gold-shimmer leading-none">HEAVEN</span>
+              <span className="text-[8.5px] sm:text-[9.5px] font-extrabold uppercase tracking-[0.24em] text-amber-400 leading-tight mt-0.5">
+                FURNITURE MART
+              </span>
             </div>
             <div className="hidden sm:block border-l border-white/20 pl-3">
               <span className="block text-[9px] uppercase tracking-[0.25em] font-bold text-amber-500">

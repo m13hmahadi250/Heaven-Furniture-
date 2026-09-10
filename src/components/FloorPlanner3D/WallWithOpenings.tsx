@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
-import { WallSide, WallOpening } from './types';
+import { WallSide, WallOpening, LightingPreset } from './types';
 
 interface WallWithOpeningsProps {
   wallSide: WallSide;
@@ -13,6 +13,7 @@ interface WallWithOpeningsProps {
   timberMaterial: THREE.Material;
   openings: WallOpening[];
   outsideVista?: 'skyline' | 'garden';
+  lightingPreset?: LightingPreset;
   position: [number, number, number];
   rotation: [number, number, number];
   isCutaway?: boolean;
@@ -29,6 +30,7 @@ export const WallWithOpenings: React.FC<WallWithOpeningsProps> = ({
   timberMaterial,
   openings,
   outsideVista = 'garden',
+  lightingPreset = 'day',
   position,
   rotation,
   isCutaway = false
@@ -216,7 +218,15 @@ export const WallWithOpenings: React.FC<WallWithOpeningsProps> = ({
                 <mesh>
                   <planeGeometry args={[op.w * 1.6, op.h * 1.5]} />
                   <meshBasicMaterial
-                    color={outsideVista === 'garden' ? '#A7F3D0' : '#BAE6FD'}
+                    color={
+                      lightingPreset === 'evening'
+                        ? '#FB923C'
+                        : lightingPreset === 'gallery'
+                        ? '#1E293B'
+                        : outsideVista === 'garden'
+                        ? '#A7F3D0'
+                        : '#BAE6FD'
+                    }
                     side={THREE.DoubleSide}
                   />
                 </mesh>
@@ -224,8 +234,16 @@ export const WallWithOpenings: React.FC<WallWithOpeningsProps> = ({
                 <mesh position={[0, -op.h * 0.2, 0.02]}>
                   <boxGeometry args={[op.w * 1.2, op.h * 0.8, 0.01]} />
                   <meshBasicMaterial
-                    color={outsideVista === 'garden' ? '#064E3B' : '#0F172A'}
-                    opacity={0.45}
+                    color={
+                      lightingPreset === 'evening'
+                        ? '#451A03'
+                        : lightingPreset === 'gallery'
+                        ? '#090D16'
+                        : outsideVista === 'garden'
+                        ? '#064E3B'
+                        : '#0F172A'
+                    }
+                    opacity={lightingPreset === 'gallery' ? 0.65 : 0.45}
                     transparent
                   />
                 </mesh>

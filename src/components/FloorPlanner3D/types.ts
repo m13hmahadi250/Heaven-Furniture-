@@ -4,6 +4,7 @@ export type WallColorId = 'warm-ivory' | 'charcoal-teal' | 'greige' | 'studio-cl
 export type UnitSystem = 'imperial' | 'metric';
 export type CameraMode = 'perspective' | 'blueprint' | 'eye-level';
 export type CatalogCategory = 'living' | 'bedroom' | 'dining' | 'executive';
+export type LightingPreset = 'day' | 'evening' | 'gallery';
 
 export type WallSide = 'back' | 'left' | 'right' | 'front';
 export type WallOpeningType = 'window' | 'door';
@@ -71,6 +72,7 @@ export interface RoomConfig {
   outsideVista: 'skyline' | 'garden';
   wallVisibility?: 'full' | 'cutaway' | 'none';
   openings: WallOpening[];
+  lightingPreset?: LightingPreset;
 }
 
 export interface FloorFinishMeta {

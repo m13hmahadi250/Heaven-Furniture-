@@ -6,9 +6,153 @@ import { RoomMesh } from './RoomMesh';
 import { CameraRig } from './CameraRig';
 import { ProceduralFurnitureMesh } from './ProceduralFurnitureMeshes';
 import { ActiveItemHaloGizmo } from './ActiveItemHaloGizmo';
-import { PlacedFurniture, RoomConfig, UnitSystem, CameraMode, CatalogItem } from './types';
+import { PlacedFurniture, RoomConfig, UnitSystem, CameraMode, CatalogItem, LightingPreset } from './types';
 import { CATALOG_ITEMS } from './catalogData';
 import { snapToGrid, evaluateCollisions } from './collisionUtils';
+
+/**
+ * Architectural Studio Lighting Rig supporting Day, Evening, and Gallery presets
+ */
+const StudioLightingRig: React.FC<{ preset: LightingPreset; roomConfig: RoomConfig }> = ({ preset, roomConfig }) => {
+  const ceilingY = roomConfig.ceilingHeightFt;
+  const halfW = roomConfig.widthFt / 2;
+  const halfL = roomConfig.lengthFt / 2;
+
+  if (preset === 'evening') {
+    return (
+      <group>
+        {/* Soft intimate evening ambient with warm honey tint */}
+        <ambientLight intensity={0.36} color="#FEF3C7" />
+
+        {/* Low golden hour sun streaming through windows at a dramatic dusk angle */}
+        <directionalLight
+          position={[18, 9, -10]}
+          intensity={1.25}
+          castShadow
+          shadow-mapSize={[1024, 1024]}
+          shadow-bias={-0.0001}
+          shadow-camera-near={1}
+          shadow-camera-far={60}
+          shadow-camera-left={-20}
+          shadow-camera-right={20}
+          shadow-camera-top={20}
+          shadow-camera-bottom={-20}
+          color="#FBA048"
+        />
+
+        {/* Interior ceiling downlight / chandelier pool: Warm 2700K incandescent glow */}
+        <pointLight
+          position={[0, ceilingY - 0.35, 0]}
+          intensity={1.6}
+          distance={30}
+          decay={2}
+          color="#FFEDD5"
+          castShadow={false}
+        />
+
+        {/* Subtle accent warm wall sconce bounce */}
+        <pointLight
+          position={[-halfW * 0.7, ceilingY * 0.65, -halfL * 0.7]}
+          intensity={0.7}
+          distance={16}
+          color="#F97316"
+        />
+
+        {/* Evening dusk sky hemisphere bounce */}
+        <hemisphereLight
+          args={['#A855F7', '#78350F', 0.28]}
+        />
+      </group>
+    );
+  }
+
+  if (preset === 'gallery') {
+    return (
+      <group>
+        {/* Minimal high-contrast exhibition ambient */}
+        <ambientLight intensity={0.24} color="#F8FAFC" />
+
+        {/* Focused Museum Gallery Key Track Spotlight */}
+        <directionalLight
+          position={[10, 24, 10]}
+          intensity={1.55}
+          castShadow
+          shadow-mapSize={[1024, 1024]}
+          shadow-bias={-0.0001}
+          shadow-camera-near={1}
+          shadow-camera-far={60}
+          shadow-camera-left={-20}
+          shadow-camera-right={20}
+          shadow-camera-top={20}
+          shadow-camera-bottom={-20}
+          color="#FFFFFF"
+        />
+
+        {/* Cross-track counter spotlight to reveal fine timber grain & textile textures */}
+        <directionalLight
+          position={[-12, 20, -12]}
+          intensity={0.95}
+          color="#F1F5F9"
+        />
+
+        {/* Focused Overhead Showroom Track Downlight */}
+        <pointLight
+          position={[0, ceilingY - 0.2, 0]}
+          intensity={1.1}
+          distance={25}
+          color="#FFFFFF"
+        />
+
+        {/* Crisp Specular Rim Light */}
+        <pointLight
+          position={[halfW * 0.8, ceilingY * 0.8, halfL * 0.8]}
+          intensity={0.65}
+          distance={20}
+          color="#E2E8F0"
+        />
+
+        {/* Clean architectural cool hemisphere */}
+        <hemisphereLight
+          args={['#E2E8F0', '#0F172A', 0.25]}
+        />
+      </group>
+    );
+  }
+
+  // Default: 'day' - Crisp natural sunbeams & airy sky bounce
+  return (
+    <group>
+      {/* Crisp daylight ambient */}
+      <ambientLight intensity={0.65} color="#FAF5EE" />
+
+      {/* High sun angle simulating natural window daylight */}
+      <directionalLight
+        position={[16, 22, -12]}
+        intensity={1.4}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0001}
+        shadow-camera-near={1}
+        shadow-camera-far={60}
+        shadow-camera-left={-20}
+        shadow-camera-right={20}
+        shadow-camera-top={20}
+        shadow-camera-bottom={-20}
+        color="#FFF7ED"
+      />
+
+      {/* Soft fill bounce light (sky reflection) */}
+      <pointLight position={[-12, 10, 12]} intensity={0.35} color="#BAE6FD" />
+      {/* Gentle ceiling bounce */}
+      <pointLight position={[0, ceilingY - 0.5, 0]} intensity={0.35} color="#FEF3C7" />
+
+      {/* Atmospheric sky hemisphere bounce */}
+      <hemisphereLight
+        args={['#E0F2FE', '#E4E4E7', 0.35]}
+      />
+    </group>
+  );
+};
 
 interface FloorPlannerCanvasProps {
   roomConfig: RoomConfig;
@@ -170,6 +314,18 @@ export const InteractiveFloorPlannerCanvas: React.FC<FloorPlannerCanvasProps> = 
         }}
       >
         <Suspense fallback={null}>
+          {/* Dynamic 3D Studio Environment Background */}
+          <color
+            attach="background"
+            args={[
+              roomConfig.lightingPreset === 'evening'
+                ? '#0B0E17'
+                : roomConfig.lightingPreset === 'gallery'
+                ? '#07080B'
+                : '#141518'
+            ]}
+          />
+
           {/* CAMERA RIG WITH DUAL ORTHO / PERSPECTIVE / EYE-LEVEL MODES */}
           <CameraRig
             mode={cameraMode}
@@ -186,28 +342,11 @@ export const InteractiveFloorPlannerCanvas: React.FC<FloorPlannerCanvasProps> = 
             onDragEnd={handleFinishDrag}
           />
 
-          {/* STUDIO & AMBIENT LIGHTING ARCHITECTURE */}
-          <ambientLight intensity={0.65} color="#FAF5EE" />
-
-          {/* Key Sun Directional Light (simulating daylight coming through window) */}
-          <directionalLight
-            position={[16, 22, -12]}
-            intensity={1.4}
-            castShadow
-            shadow-mapSize={[1024, 1024]}
-            shadow-bias={-0.0001}
-            shadow-camera-near={1}
-            shadow-camera-far={60}
-            shadow-camera-left={-20}
-            shadow-camera-right={20}
-            shadow-camera-top={20}
-            shadow-camera-bottom={-20}
-            color="#FFF7ED"
+          {/* STUDIO & AMBIENT LIGHTING RIG (DAY / EVENING / GALLERY) */}
+          <StudioLightingRig
+            preset={roomConfig.lightingPreset || 'day'}
+            roomConfig={roomConfig}
           />
-
-          {/* Soft fill bounce light */}
-          <pointLight position={[-12, 10, 12]} intensity={0.35} color="#BAE6FD" />
-          <pointLight position={[0, roomConfig.ceilingHeightFt - 0.5, 0]} intensity={0.4} color="#FEF3C7" />
 
           {/* ROOM ENVELOPE: FLOOR, WALLS, WINDOW, MEASUREMENT LINES */}
           <RoomMesh
@@ -276,12 +415,24 @@ export const InteractiveFloorPlannerCanvas: React.FC<FloorPlannerCanvasProps> = 
           {/* REALISTIC CONTACT SHADOWS ON FLOOR */}
           <ContactShadows
             position={[0, 0.01, 0]}
-            opacity={0.68}
+            opacity={
+              roomConfig.lightingPreset === 'evening'
+                ? 0.76
+                : roomConfig.lightingPreset === 'gallery'
+                ? 0.88
+                : 0.68
+            }
             scale={Math.max(roomConfig.widthFt, roomConfig.lengthFt) * 1.5}
-            blur={2.4}
+            blur={roomConfig.lightingPreset === 'gallery' ? 1.6 : 2.4}
             far={12}
             resolution={512}
-            color="#0F0C08"
+            color={
+              roomConfig.lightingPreset === 'evening'
+                ? '#241206'
+                : roomConfig.lightingPreset === 'gallery'
+                ? '#000000'
+                : '#0F0C08'
+            }
           />
         </Suspense>
       </Canvas>
